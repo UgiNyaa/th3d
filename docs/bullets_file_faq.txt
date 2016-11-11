@@ -1,0 +1,19 @@
+What does bm.json stand for?
+
+bm = Bullet Map
+json = JavaScript Object Notation (pretty handy serialization format)
+
+
+How does the .bm.json file works?
+
+First of all, they are written in the json format. The initial value is not a object, but a Array (it starts with "[" and ends with "]"). This array contains bullets.
+
+How is a bullet defined?
+
+Bullets are not more than flying objects. The only you have to define is the movment of each axis. You can do that with the various formatters we have. The major intention is to define each movement with a mathematical function, since you can define almost everything with that, but they are complicated, so you have different fomatters, which try to keep it simple.
+
+What is a formatter?
+
+A formatter tries to simplify the initialization of a movement on a axis of a bullet. There are many formatters, which are all explained on another page. For better understanding, lets take the "linear" formatter. Its inputs are merely points. These points consists of a "t" and "f" value. "t" is the time, in that "f" is defined. So you have a movement dependent on time (like every movement). It only moves the bullet from one point to another, linear.
+Another way to think of a formatter is to imagine it is a function generator. Lets say you have defined two points of the x-axis (0, 0) and (1, 1). This means, that at time=1s, the bullet has moved 1m on the x-axis.
+Notice that every formatter needs other information in the "x"-object (after formatter is defined). In the case of the linear formatter, it only needs "points", but there can by other formatters, that need other attributes. Please look up what they use.

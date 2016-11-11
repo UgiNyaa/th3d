@@ -1,0 +1,22 @@
+[
+    {
+        "x": {
+            "format": "linear",
+            "points": [
+                {"t": 0, "f": 0},
+                {"t": 1, "f": 1}
+            ]
+        },
+        "y": {
+            "format": "linear",
+            "points": [
+                {"t": 0, "f": 0},
+                {"t": 1, "f": 1}
+            ]
+        },
+        "z": {
+            "format": "const",
+            "value": 0
+        }
+    }
+]

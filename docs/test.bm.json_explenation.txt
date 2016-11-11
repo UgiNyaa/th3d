@@ -1,0 +1,75 @@
+The test.bm.json file is built pretty simple.
+
+First notice that it is capsuled in an array (stars with "[" and ends with "]"). This is an array of bullets.
+[
+...
+]
+
+As you can see, we only define one bullet.
+
+[
+    {...} <- the bullet
+]
+
+There are three attributes defined in the bullet: x, y, z. They contain the movement definition of their axis.
+
+"x": {...} <-
+"y": {...} <- movement definition is in here
+"z": {...} <-
+
+Lets look closer in the movment definition itself, since this is the most important part. First we see an attribute called "format".
+
+"x": {
+    "format": "linear"
+    ...
+}
+
+It defines the format linear. The linear format defines a linear function with given points.
+
+"x": {
+    "format": "linear",
+    "points": [
+        {"t": 0, "f": 0},
+        {"t": 1, "f": 1}
+    ]
+}
+
+As you can see, we define 2 points. But they are pretty werid. Why are they defined with "t" and "f" and not with "x" and "y". First, the "t" part represents the overall time that has past, since movement is dependent form time. "f" represents the result that should come out of this function, if we use the given time. The reason why we do not use "y" is because it could be missunderstood as the y-axis of the bullet, but in this case, it represents the x-axis of the bullet, so in generall, it is just the result "f".
+
+Lets now get more into the format "linear". What linear says, is how to define the mathematical function. In this case, if we use the two points (0, 0) and (1, 1) (in the (t, f) structure), we could calculate a function of it. But since you can potentially create infinite functions out of it, we need to specify a certain kind. In this case, it is "linear".
+How does "linear" calculate the mathematical function? It is pretty easy. It uses the blueprint for linear functions in mathematics: f = k*t + d. Now if we set in both values:
+
+0 = 0*k + d
+1 = 1*k + d
+we get =>
+d = 0
+k = 1
+so our mathematical function for calculating movement on x-axis would be
+f = 1*t + 0 = t
+
+So when you would want to have the position of the bullet in 4s, you would have 4m on the x-axis.
+
+The "y" attribute is defined the same.
+
+"y": {
+    "format": "linear",
+    "points": [
+        {"t": 0, "f": 0},
+        {"t": 1, "f": 1}
+    ]
+}
+
+But the "z" attribute has some other format, that we do not know yet.
+
+"z": {
+    "format": "const",
+    "value": 0
+}
+
+Naturally, if the format is differently, the continuous attributes the format requires, are also diffrerent. In this case, we have the "const" format. This is even easier that the "linear" format. It basically says, that undependent of time, z shall be 0. The mathematical function would look like this:
+
+f = 0
+
+We do not even have the t variable involved. No matter what time it is, "z" will be 0.
+
+That was one of the most basic bm.json file. I hope you can understand that.
