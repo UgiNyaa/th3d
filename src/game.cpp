@@ -51,8 +51,14 @@ Game::Game(std::vector<Bullet*> bullets)
 
 Game::~Game()
 {
+    delete camera;
+    delete square;
+
     glDeleteVertexArrays(1, &vertexarrayID);
     glfwTerminate();
+
+    for (auto bullet : bullets)
+        delete bullet;
 }
 
 GLFWwindow* Game::get_window() { return this->window; }
