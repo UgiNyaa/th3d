@@ -103,6 +103,9 @@ void Game::draw(float deltatime)
         square->draw(model, view, projection);
     }
 
+    auto model = camera->model();
+    square->draw(model, view, projection);
+
     glfwSwapBuffers(window);
     glfwPollEvents();
 }

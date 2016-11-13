@@ -41,7 +41,14 @@ glm::mat4 Camera::view()
     );
     glm::vec3 up = glm::cross(right, direction);
 
-    return glm::lookAt(position, position + direction, up);
+    return glm::lookAt(position - (direction * 10.0f), position + direction, up);
+}
+
+glm::mat4 Camera::model()
+{
+    return
+        glm::translate(position) * 
+        glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
 }
 
 void Camera::update(double delta)
