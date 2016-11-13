@@ -2,6 +2,29 @@
 #include <json.hpp>
 using json = nlohmann::json;
 #include <game.hpp>
+#include <functional>
+#include <exprtk.hpp>
+#include <string>
+
+std::function<float(float)> math_expr_to_func(const char* math_expr)
+{
+    float t;
+
+    exprtk::symbol_table<float> symbol_table;
+    symbol_table.add_variable("t", t);
+    symbol_table.add_constants();
+
+    exprtk::expression<float> expression;
+    expression.register_symbol_table(symbol_table);
+
+    exprtk::parser<float> parser;
+    parser.compile(math_expr, expression);
+
+    return [=, &t](float time) -> float{
+        t = time;
+        return expression.value();
+    };
+}
 
 std::vector<Bullet*> bm_json_read(const char* bm_json)
 {
@@ -12,25 +35,13 @@ std::vector<Bullet*> bm_json_read(const char* bm_json)
         auto bullet = new Bullet();
 
         auto j_x = j_bullet["x"];
-        if (j_x["format"] != "const")
-            continue;
-        float x = j_x["value"];
-        bullet->f_position_x = [=](float t) -> float
-            { return x; };
+        bullet->f_position_x = math_expr_to_func(j_x.get<std::string>().c_str());
 
         auto j_y = j_bullet["y"];
-        if (j_y["format"] != "const")
-            continue;
-        float y = j_y["value"];
-        bullet->f_position_y = [=](float t) -> float
-            { return y; };
+        bullet->f_position_y = math_expr_to_func(j_y.get<std::string>().c_str());
 
         auto j_z = j_bullet["z"];
-        if (j_z["format"] != "const")
-            continue;
-        float z = j_z["value"];
-        bullet->f_position_z = [=](float t) -> float
-            { return z; };
+        bullet->f_position_z = math_expr_to_func(j_z.get<std::string>().c_str());
 
         bullets.push_back(bullet);
     }

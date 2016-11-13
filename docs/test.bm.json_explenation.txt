@@ -1,3 +1,7 @@
+##################################################
+# THIS FILE HAS BECOME OBSOLETE SINCE 2016-11-13 #
+##################################################
+
 The test.bm.json file is built pretty simple.
 
 First notice that it is capsuled in an array (stars with "[" and ends with "]"). This is an array of bullets.
