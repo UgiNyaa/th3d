@@ -27,10 +27,15 @@ int main(int argc, char *argv[])
     Game game = Game(bullets);
     game.initialize();
 
+    auto lastTime = glfwGetTime();
+
     while (game.is_open())
     {
-        game.update(0.2f);
-        game.draw(0.2f);
+        auto dt = float(glfwGetTime() - lastTime);
+        printf("%f\n", dt);
+        lastTime = glfwGetTime();
+        game.update(dt);
+        game.draw(dt);
     }
 
     return 0;

@@ -47,11 +47,11 @@ glm::mat4 Camera::view()
 glm::mat4 Camera::model()
 {
     return
-        glm::translate(position) * 
+        glm::translate(position) *
         glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
 }
 
-void Camera::update(double delta)
+void Camera::update(double deltatime)
 {
     double xpos, ypos;
     int32_t width, height;
@@ -67,10 +67,10 @@ void Camera::update(double delta)
     bool go_up = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
     bool go_down = glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS;
 
-    auto xdelta = float(width/2 - xpos) * 0.003f;
-    auto ydelta = float(height/2 - ypos) * 0.003f;
-    horizontalAngle += float(delta) * xdelta;
-    verticalAngle += float(delta) * ydelta;
+    auto xdelta = float(width/2 - xpos);
+    auto ydelta = float(height/2 - ypos);
+    horizontalAngle += float(deltatime) * xdelta * 0.05f;
+    verticalAngle += float(deltatime) * ydelta * 0.05f;
 
     glm::vec3 direction = glm::vec3(
         cos(verticalAngle) * sin(horizontalAngle),
@@ -91,5 +91,5 @@ void Camera::update(double delta)
     if (move != glm::vec3(0,0,0))
         move = glm::normalize(move);
 
-    position += move * float(delta);
+    position += move * float(deltatime) * 10.0f;
 }
