@@ -77,7 +77,8 @@ void Game::initialize()
     glGenVertexArrays(1, &vertexarrayID);
     glBindVertexArray(vertexarrayID);
 
-    GLuint texture = loadBMP_custom("resources/textures/miku.bmp");
+    //loadBMP_custom("resources/textures/miku.bmp");
+    loadPNG("resources/textures/kawaii.png");
 }
 
 void Game::update(float deltatime)

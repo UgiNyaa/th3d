@@ -4,6 +4,8 @@
 #include <fstream>
 #include <vector>
 
+#include <png++/png.hpp>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -158,6 +160,36 @@ GLuint loadBMP_custom(const char *imagepath)
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    return textureID;
+}
+
+GLuint loadPNG(const char *imagepath)
+{
+    png::image<png::rgba_pixel> image(imagepath);
+
+    auto width = image.get_width();
+    auto height = image.get_height();
+
+    auto data = new uint8_t[width * height * 4];
+    for (size_t y = 0; y < height * 4; y += 4) {
+        for (size_t x = 0; x < width * 4; x += 4) {
+            data[y * width + x + 0] = image.get_pixel(x/4, (height*4-y-1)/4).red;
+            data[y * width + x + 1] = image.get_pixel(x/4, (height*4-y-1)/4).green;
+            data[y * width + x + 2] = image.get_pixel(x/4, (height*4-y-1)/4).blue;
+            data[y * width + x + 3] = image.get_pixel(x/4, (height*4-y-1)/4).alpha;
+        }
+    }
+
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
