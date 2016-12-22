@@ -7,7 +7,6 @@
 #include <glm/gtx/transform.hpp>
 
 #include <bullet.hpp>
-#include <game.hpp>
 
 float gametime;
 

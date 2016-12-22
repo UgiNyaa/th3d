@@ -16,6 +16,7 @@ private:
     float horizontalAngle;
     float verticalAngle;
     float fov;
+    float distance;
 public:
     Camera ();
     Camera (Game* game);

@@ -16,6 +16,7 @@ Camera::Camera(Game* game)
     this->horizontalAngle = 0;
     this->verticalAngle = 0;
     this->fov = 45;
+    this->distance = 10.0f;
 }
 
 glm::mat4 Camera::projection()
@@ -41,7 +42,7 @@ glm::mat4 Camera::view()
     );
     glm::vec3 up = glm::cross(right, direction);
 
-    return glm::lookAt(position - (direction * 10.0f), position + direction, up);
+    return glm::lookAt(position - (direction * distance), position + direction, up);
 }
 
 glm::mat4 Camera::model()

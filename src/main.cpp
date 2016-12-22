@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
     while (game.is_open())
     {
         auto dt = float(glfwGetTime() - lastTime);
-        printf("%f\n", dt);
         lastTime = glfwGetTime();
         game.update(dt);
         game.draw(dt);
