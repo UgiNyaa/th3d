@@ -9,6 +9,7 @@
 class Player {
 private:
     GLFWwindow* window;
+    glm::vec3 position;
     float horizontalAngle;
     float verticalAngle;
     float horizontalAngleNext;
