@@ -6,24 +6,20 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-class Game;
+#include <player.hpp>
 
 class Camera
 {
 private:
-    Game* game;
-    glm::vec3 position;
-    float horizontalAngle;
-    float verticalAngle;
+    Player* player;
     float fov;
     float distance;
 public:
     Camera ();
-    Camera (Game* game);
+    Camera (Player* player);
 
     glm::mat4 projection();
     glm::mat4 view();
-    glm::mat4 model();
 
     void update(double delta);
 };

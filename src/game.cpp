@@ -44,7 +44,8 @@ Game::Game(std::vector<Bullet*> bullets)
         throw "Failed to initialize GLEW\n";
     }
 
-    camera = new Camera(this);
+    player = new Player(window);
+    camera = new Camera(player);
     square = new Square();
     open = true;
 }
@@ -52,6 +53,7 @@ Game::Game(std::vector<Bullet*> bullets)
 Game::~Game()
 {
     delete camera;
+    delete player;
     delete square;
 
     glDeleteVertexArrays(1, &vertexarrayID);
@@ -83,6 +85,7 @@ void Game::initialize()
 
 void Game::update(float deltatime)
 {
+    player->update(deltatime);
     camera->update(deltatime);
     for (auto bullet : bullets)
         bullet->update(deltatime);
@@ -104,7 +107,7 @@ void Game::draw(float deltatime)
         square->draw(model, view, projection);
     }
 
-    auto model = camera->model();
+    auto model = player->model();
     square->draw(model, view, projection);
 
     glfwSwapBuffers(window);
