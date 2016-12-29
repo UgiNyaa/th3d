@@ -10,41 +10,19 @@ class Player {
 private:
     GLFWwindow* window;
     glm::vec3 position;
-    float horizontalAngle;
-    float verticalAngle;
-    float horizontalAngleNext;
-    float verticalAngleNext;
-    float deltatime;
-
-    /* --- CALLBACKS --- */
-    void cursor_position_callback
-    (
-        GLFWwindow* window,
-        double xpos,
-        double ypos
-    );
-    void scroll_callback
-    (
-        GLFWwindow* window,
-        double xoffset,
-        double yoffset
-    );
-    void key_callback
-    (
-        GLFWwindow* window,
-        int key,
-        int scancode,
-        int action,
-        int mods
-    );
+    float bodyHorizontalAngle;
+    float bodyVerticalAngle;
+    float lookHorizontalAngle;
+    float lookVerticalAngle;
 public:
     Player (GLFWwindow* window);
 
-    void set_deltatime(float t) { this->deltatime = t; }
+    glm::vec3 get_position() { return position; }
+    float get_look_horizontal_angle() { return lookHorizontalAngle; }
+    float get_look_vertical_angle() { return lookVerticalAngle; }
 
     glm::mat4 model();
 
-    void initialize();
     void update(double deltatime);
 };
 

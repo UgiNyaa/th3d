@@ -11,69 +11,56 @@
 Player::Player(GLFWwindow* window)
 {
     this->window = window;
-    this->horizontalAngleNext = 0;
-    this->verticalAngleNext = 0;
-    this->horizontalAngle = 0;
-    this->verticalAngle = 0;
+    this->bodyHorizontalAngle = 0;
+    this->bodyVerticalAngle = 0;
+    this->lookHorizontalAngle = 0;
+    this->lookVerticalAngle = 0;
     this->position = glm::vec3(0,0,0);
 }
 
-void Player::initialize()
+glm::mat4 Player::model()
 {
-    glfwSetCursorPosCallback(window, cursor_position_callback);
-    glfwSetKeyCallback(window, key_callback);
+    return
+        glm::translate(position) *
+        glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
 }
 
-void Player::cursor_position_callback
-(
-    GLFWwindow* window,
-    double xpos,
-    double ypos
-)
+void Player::update(double deltatime)
 {
+    double xpos, ypos;
     int32_t width, height;
     glfwGetWindowSize(window, &width, &height);
+    glfwGetCursorPos(window, &xpos, &ypos);
     glfwSetCursorPos(window, width/2, height/2);
+
+    bool go_forward = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS;
+    bool go_left = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS;
+    bool go_backward = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
+    bool go_right = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
+    bool go_up = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS;
+    bool go_down = glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS;
+    bool moving = go_forward || go_backward
+        || go_left || go_right
+        || go_up || go_down;
 
     auto xdelta = float(width/2 - xpos);
     auto ydelta = float(height/2 - ypos);
+    lookHorizontalAngle += float(deltatime) * xdelta * 0.05f;
+    lookVerticalAngle += float(deltatime) * ydelta * 0.05f;
 
-    horizontalAngleNext += float(deltatime) * xdelta * 0.05f;
-    verticalAngleNext += float(deltatime) * ydelta * 0.05f;
-}
-
-void Player::key_callback
-(
-    GLFWwindow* window,
-    int key,
-    int scancode,
-    int action,
-    int mods
-)
-{
-    bool go_forward     = key == GLFW_KEY_W && action == GLFW_PRESS;
-    bool go_left        = key == GLFW_KEY_A && action == GLFW_PRESS;
-    bool go_backward    = key == GLFW_KEY_S && action == GLFW_PRESS;
-    bool go_right       = key == GLFW_KEY_D && action == GLFW_PRESS;
-    bool go_up          = key == GLFW_KEY_E && action == GLFW_PRESS;
-    bool go_down        = key == GLFW_KEY_Q && action == GLFW_PRESS;
-    bool is_moving = go_forward || go_left || go_backward
-        || go_right || go_up || go_down;
-
-    if (is_moving)
+    if (moving)
     {
-        verticalAngle = verticalAngleNext;
-        horizontalAngle = horizontalAngleNext;
-
+        bodyHorizontalAngle = lookHorizontalAngle;
+        bodyVerticalAngle = lookVerticalAngle;
         glm::vec3 direction = glm::vec3(
-            cos(verticalAngle) * sin(horizontalAngle),
-            sin(verticalAngle),
-            cos(verticalAngle) * cos(horizontalAngle)
+            cos(bodyVerticalAngle) * sin(bodyHorizontalAngle),
+            sin(bodyVerticalAngle),
+            cos(bodyVerticalAngle) * cos(bodyHorizontalAngle)
         );
         glm::vec3 right = glm::vec3(
-            sin(horizontalAngle - 3.14f/2.0f),
+            sin(bodyHorizontalAngle - 3.14f/2.0f),
             0,
-            cos(horizontalAngle - 3.14f/2.0f)
+            cos(bodyHorizontalAngle - 3.14f/2.0f)
         );
         glm::vec3 up = glm::cross(right, direction);
 

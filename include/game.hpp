@@ -9,6 +9,7 @@
 #include <square.hpp>
 #include <camera.hpp>
 #include <bullet.hpp>
+#include <player.hpp>
 #include <vector>
 
 class Game
@@ -18,6 +19,7 @@ private:
     GLuint vertexarrayID;
     Camera* camera;
     Square* square;
+    Player* player;
     std::vector<Bullet*> bullets;
     bool open;
 public:
