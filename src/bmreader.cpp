@@ -1,7 +1,6 @@
 #include <bmreader.hpp>
 #include <json.hpp>
 using json = nlohmann::json;
-#include <game.hpp>
 #include <functional>
 #include <exprtk.hpp>
 #include <string>

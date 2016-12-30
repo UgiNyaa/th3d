@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -7,6 +8,8 @@
 #include <glm/gtx/transform.hpp>
 
 #include <player.hpp>
+
+double dt = 0;
 
 Player::Player(GLFWwindow* window)
 {
@@ -31,7 +34,7 @@ void Player::update(double deltatime)
     int32_t width, height;
     glfwGetWindowSize(window, &width, &height);
     glfwGetCursorPos(window, &xpos, &ypos);
-    glfwSetCursorPos(window, width/2, height/2);
+    //glfwSetCursorPos(window, width/2, height/2);
 
     bool go_forward = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS;
     bool go_left = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS;
@@ -71,5 +74,6 @@ void Player::update(double deltatime)
         move = glm::normalize(move);
 
         position += move * float(deltatime) * 10.0f;
+
     }
 }

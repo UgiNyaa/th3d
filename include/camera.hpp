@@ -22,6 +22,13 @@ public:
     glm::mat4 view();
 
     void update(double delta);
+
+    void on_scroll
+    (
+        GLFWwindow* window,
+        double xoffset,
+        double yoffset
+    );
 };
 
 #endif /* end of include guard: CAMERA_HPP */
