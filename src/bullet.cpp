@@ -20,6 +20,11 @@ Bullet::Bullet()
     f_position_z = [](float t) -> float{ return 0; };
 }
 
+Box Bullet::get_collider()
+{
+    return Box(position - glm::vec3(1.0f), position + glm::vec3(1.0f));
+}
+
 void Bullet::update(float deltatime)
 {
     gametime += deltatime;

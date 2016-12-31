@@ -8,17 +8,17 @@
 #include <glm/gtx/transform.hpp>
 
 #include <player.hpp>
+#include <collision.hpp>
 
-double dt = 0;
-
-Player::Player(GLFWwindow* window)
+Player::Player(GLFWwindow* window, std::vector<Bullet*> bullets)
 {
     this->window = window;
+    this->bullets = bullets;
     this->bodyHorizontalAngle = 0;
     this->bodyVerticalAngle = 0;
     this->lookHorizontalAngle = 0;
     this->lookVerticalAngle = 0;
-    this->position = glm::vec3(0,0,0);
+    this->position = glm::vec3(0,0,5);
 }
 
 glm::mat4 Player::model()
@@ -34,7 +34,6 @@ void Player::update(double deltatime)
     int32_t width, height;
     glfwGetWindowSize(window, &width, &height);
     glfwGetCursorPos(window, &xpos, &ypos);
-    //glfwSetCursorPos(window, width/2, height/2);
 
     bool go_forward = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS;
     bool go_left = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS;
@@ -73,7 +72,27 @@ void Player::update(double deltatime)
           + (go_up ? up : (go_down ? -up : glm::vec3(0, 0, 0)));
         move = glm::normalize(move);
 
-        position += move * float(deltatime) * 10.0f;
+        auto velocity = move * float(deltatime) * 10.0f;
 
+        for(auto bullet : bullets)
+        {
+            if
+            (
+                bullet->get_collider().intersects
+                (
+                    Box
+                    (
+                        position + velocity - glm::vec3(.5f),
+                        position + velocity + glm::vec3(.5f)
+                    )
+                )
+            )
+            {
+                velocity = glm::vec3(0.0f);
+                break;
+            }
+        }
+
+        position += velocity;
     }
 }

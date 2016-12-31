@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     glfwSetScrollCallback(window, scroll_callback);
 
     /* ---------------- COMPONENTS INITIALIZATION ---------------- */
-    player = new Player(window);
+    player = new Player(window, bullets);
     camera = new Camera(player);
     square = new Square();
 
