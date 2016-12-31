@@ -1,12 +1,15 @@
-#ifndef SQUARE_HPP
-#define SQUARE_HPP
+#ifndef CUBE_HPP
+#define CUBE_HPP
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-class Square {
+#include <shapes/shape.hpp>
+#include <collision.hpp>
+
+class Cube : public Shape {
 private:
     static const GLfloat g_vertex_buffer_data[];
     static const GLfloat g_uv_buffer_data[];
@@ -18,15 +21,15 @@ private:
     GLuint uvbuffer;
     GLuint mvpID;
 public:
-    Square();
-    ~Square();
+    Cube();
+    ~Cube();
 
     void draw
     (
         glm::mat4 model,
         glm::mat4 view,
         glm::mat4 projection
-    );
+    ) override;
 };
 
-#endif /* end of include guard: SQUARE_HPP */
+#endif /* end of include guard: CUBE_HPP */

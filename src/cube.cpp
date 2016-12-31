@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include <square.hpp>
+#include <shapes/cube.hpp>
 
 // How buffer looks like:
 // A = wanted value
@@ -51,7 +51,7 @@ Go counter clockwise and define the second triangle
 !upper tri end point = lower tri start point!
 !0,0 and 1,1 are defined twice!
 */
-const GLfloat Square::g_vertex_buffer_data[] = {
+const GLfloat Cube::g_vertex_buffer_data[] = {
     // front-lower triangle
     -1.0f,-1.0f, /**/1.0f,
     +1.0f,-1.0f, /**/1.0f,
@@ -85,7 +85,7 @@ const GLfloat Square::g_vertex_buffer_data[] = {
     /**/1.0f, -1.0f,+1.0f,
     /**/1.0f, -1.0f,-1.0f,
 };
-const GLfloat Square::g_uv_buffer_data[] = {
+const GLfloat Cube::g_uv_buffer_data[] = {
     // front-lower triangle
     0.0f, 0.0f,
     1.0f, 0.0f,
@@ -119,7 +119,7 @@ const GLfloat Square::g_uv_buffer_data[] = {
     1.0f, 0.0f,
     0.0f, 0.0f,
 };
-const char *Square::vertex_shader_code = R"(
+const char *Cube::vertex_shader_code = R"(
 #version 330 core
 
 layout(location = 0) in vec3 vertexPosition_modelspace;
@@ -135,7 +135,7 @@ gl_Position = MVP * vec4(vertexPosition_modelspace, 1);
 
 UV = vertexUV;
 })";
-const char *Square::fragment_shader_code = R"(
+const char *Cube::fragment_shader_code = R"(
 #version 330 core
 
 in vec2 UV;
@@ -150,7 +150,7 @@ void main()
 }
 )";
 
-Square::Square()
+Cube::Cube()
 {
     GLuint vsID = glCreateShader(GL_VERTEX_SHADER);
     GLuint fsID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -178,14 +178,14 @@ Square::Square()
     mvpID = glGetUniformLocation(pID, "MVP");
 }
 
-Square::~Square()
+Cube::~Cube()
 {
     glDeleteBuffers(1, &vertexbuffer);
     glDeleteBuffers(1, &uvbuffer);
     glDeleteProgram(pID);
 }
 
-void Square::draw
+void Cube::draw
 (
     glm::mat4 model,
     glm::mat4 view,

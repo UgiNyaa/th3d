@@ -10,19 +10,15 @@
 
 float gametime;
 
-Bullet::Bullet()
+Bullet::Bullet(const Shape* shape)
 {
     this->position = glm::vec3(0, 0, 0);
+    this->shape = shape;
     gametime = 0;
 
     f_position_x = [](float t) -> float{ return 0; };
     f_position_y = [](float t) -> float{ return 0; };
     f_position_z = [](float t) -> float{ return 0; };
-}
-
-Box Bullet::get_collider()
-{
-    return Box(position - glm::vec3(1.0f), position + glm::vec3(1.0f));
 }
 
 void Bullet::update(float deltatime)

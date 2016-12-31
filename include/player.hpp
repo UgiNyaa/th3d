@@ -9,6 +9,8 @@
 #include <glm/gtx/transform.hpp>
 
 #include <bullet.hpp>
+#include <shapes/shape.hpp>
+#include <collision.hpp>
 
 class Player {
 private:

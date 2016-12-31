@@ -54,12 +54,14 @@ void Player::update(double deltatime)
     {
         bodyHorizontalAngle = lookHorizontalAngle;
         bodyVerticalAngle = lookVerticalAngle;
-        glm::vec3 direction = glm::vec3(
+        glm::vec3 direction = glm::vec3
+        (
             cos(bodyVerticalAngle) * sin(bodyHorizontalAngle),
             sin(bodyVerticalAngle),
             cos(bodyVerticalAngle) * cos(bodyHorizontalAngle)
         );
-        glm::vec3 right = glm::vec3(
+        glm::vec3 right = glm::vec3
+        (
             sin(bodyHorizontalAngle - 3.14f/2.0f),
             0,
             cos(bodyHorizontalAngle - 3.14f/2.0f)
@@ -74,24 +76,7 @@ void Player::update(double deltatime)
 
         auto velocity = move * float(deltatime) * 10.0f;
 
-        for(auto bullet : bullets)
-        {
-            if
-            (
-                bullet->get_collider().intersects
-                (
-                    Box
-                    (
-                        position + velocity - glm::vec3(.5f),
-                        position + velocity + glm::vec3(.5f)
-                    )
-                )
-            )
-            {
-                velocity = glm::vec3(0.0f);
-                break;
-            }
-        }
+        // future intersection detection
 
         position += velocity;
     }

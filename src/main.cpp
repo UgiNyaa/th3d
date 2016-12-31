@@ -10,7 +10,7 @@
 
 #include <utils.hpp>
 #include <camera.hpp>
-#include <square.hpp>
+#include <shapes/cube.hpp>
 #include <bmreader.hpp>
 
 /* ---------------- MEMBERS ---------------- */
@@ -18,7 +18,7 @@ GLFWwindow* window;
 GLuint vertexarrayID;
 Player* player;
 Camera* camera;
-Square* square;
+Cube* cube;
 std::vector<Bullet*> bullets;
 bool open = true;
 
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
         (std::istreambuf_iterator<char>(ifs)),
         std::istreambuf_iterator<char>()
     );
-    bullets = bm_json_read(str.c_str());
+    bullets = bm_json_read(str.c_str(), cube);
 
 
     /* ---------------- GLFW INITIALIZATION ---------------- */
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     /* ---------------- COMPONENTS INITIALIZATION ---------------- */
     player = new Player(window, bullets);
     camera = new Camera(player);
-    square = new Square();
+    cube = new Cube();
 
     /* ---------------- GL INITIALIZATION ---------------- */
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
     glfwTerminate();
     glfwDestroyWindow(window);
 
-    delete square;
+    delete cube;
     delete camera;
     delete player;
 
@@ -152,11 +152,11 @@ void draw(float deltatime)
     for (auto bullet : bullets)
     {
         auto model = bullet->model();
-        square->draw(model, view, projection);
+        cube->draw(model, view, projection);
     }
 
     auto model = player->model();
-    square->draw(model, view, projection);
+    cube->draw(model, view, projection);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
