@@ -10,8 +10,8 @@
 std::vector<Bullet*> bm_json_read
 (
     const char* bm_json,
-    Shape** shapes,
-    int shapes_n
+    Shape** p_shapes,
+    int n_shapes
 );
 
 #endif /* end of include guard: BMREADER_HPP */

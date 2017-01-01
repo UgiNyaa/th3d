@@ -13,13 +13,11 @@
 Player::Player
 (
     GLFWwindow* window,
-    Shape * const shape,
-    std::vector<Bullet*> bullets
+    Shape * const shape
 )
     : shape(shape)
 {
     this->window = window;
-    this->bullets = bullets;
     this->bodyHorizontalAngle = 0;
     this->bodyVerticalAngle = 0;
     this->lookHorizontalAngle = 0;
@@ -81,8 +79,6 @@ void Player::update(double deltatime)
         move = glm::normalize(move);
 
         auto velocity = move * float(deltatime) * 10.0f;
-
-        // future intersection detection
 
         position += velocity;
     }

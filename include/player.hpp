@@ -17,7 +17,6 @@ private:
     GLFWwindow* window;
     Shape * const shape;
     glm::vec3 position;
-    std::vector<Bullet*> bullets;
     float bodyHorizontalAngle;
     float bodyVerticalAngle;
     float lookHorizontalAngle;
@@ -26,8 +25,7 @@ public:
     Player
     (
         GLFWwindow* window,
-        Shape * const shape,
-        std::vector<Bullet*> bullets
+        Shape * const shape
     );
 
     glm::vec3 get_position() { return position; }
