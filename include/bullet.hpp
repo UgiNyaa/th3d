@@ -26,7 +26,12 @@ public:
     std::function<float(float)> f_position_z;
 
     void update(float deltatime);
-    void draw(glm::mat4 view, glm::mat4 projection);
+    void draw
+    (
+        glm::mat4 view,
+        glm::mat4 projection,
+        glm::vec3 colourmultiplier
+    );
 };
 
 #endif /* end of include guard: BULLET_HPP */

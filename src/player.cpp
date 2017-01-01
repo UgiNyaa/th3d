@@ -84,7 +84,12 @@ void Player::update(double deltatime)
     }
 }
 
-void Player::draw(glm::mat4 view, glm::mat4 projection)
+void Player::draw
+(
+    glm::mat4 view,
+    glm::mat4 projection,
+    glm::vec3 colourmultiplier
+)
 {
-    shape->draw(model(), view, projection);
+    shape->draw(model(), view, projection, colourmultiplier);
 }

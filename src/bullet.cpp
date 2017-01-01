@@ -30,9 +30,14 @@ void Bullet::update(float deltatime)
     position.z = f_position_z(gametime);
 }
 
-void Bullet::draw(glm::mat4 view, glm::mat4 projection)
+void Bullet::draw
+(
+    glm::mat4 view,
+    glm::mat4 projection,
+    glm::vec3 colourmultiplier
+)
 {
-    shape->draw(model(), view, projection);
+    shape->draw(model(), view, projection, colourmultiplier);
 }
 
 glm::mat4 Bullet::model() { return glm::translate(position); }

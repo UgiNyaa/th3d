@@ -131,9 +131,9 @@ uniform mat4 MVP;
 
 void main()
 {
-gl_Position = MVP * vec4(vertexPosition_modelspace, 1);
+    gl_Position = MVP * vec4(vertexPosition_modelspace, 1);
 
-UV = vertexUV;
+    UV = vertexUV;
 })";
 const char *Cube::fragment_shader_code = R"(
 #version 330 core
@@ -143,10 +143,12 @@ in vec2 UV;
 out vec3 color;
 
 uniform sampler2D myTextureSampler;
+uniform vec3 colourmultiplier;
 
 void main()
 {
     color.rgb = texture(myTextureSampler, UV).rgb;
+    color.rgb = color.rgb * colourmultiplier;
 }
 )";
 
@@ -176,6 +178,7 @@ Cube::Cube()
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_uv_buffer_data), g_uv_buffer_data, GL_STATIC_DRAW);
 
     mvpID = glGetUniformLocation(pID, "MVP");
+    colourmultiplierID = glGetUniformLocation(pID, "colourmultiplier");
 }
 
 Cube::~Cube()
@@ -189,7 +192,8 @@ void Cube::draw
 (
     glm::mat4 model,
     glm::mat4 view,
-    glm::mat4 projection
+    glm::mat4 projection,
+    glm::vec3 colourmultiplier
 )
 {
     glUseProgram(pID);
@@ -197,6 +201,7 @@ void Cube::draw
     glm::mat4 mvp = projection * view * model;
 
     glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
+    glUniform3fv(colourmultiplierID, 1, &colourmultiplier[0]);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);

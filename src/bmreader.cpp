@@ -50,7 +50,7 @@ std::vector<Bullet*> bm_json_read
             }
         }
 
-        auto bullet = new Bullet(shapes[0]);
+        auto bullet = new Bullet(shape);
 
         auto j_x = j_bullet["x"];
         bullet->f_position_x = math_expr_to_func(j_x.get<std::string>().c_str());

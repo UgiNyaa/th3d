@@ -91,13 +91,13 @@ int main(int argc, char *argv[])
     );
     bullets = bm_json_read
     (
-        str.c_str(), 
+        str.c_str(),
         shapes,
         sizeof(shapes)/sizeof(shapes[0])
     );
 
     /* ---------------- COMPONENTS INITIALIZATION ---------------- */
-    player = new Player(window, shapes[0], bullets);
+    player = new Player(window, shapes[0]);
     camera = new Camera(player);
 
     /* ---------------- GL INITIALIZATION ---------------- */
@@ -162,8 +162,15 @@ void draw(float deltatime)
     auto view = camera->view();
 
     for (auto bullet : bullets)
-        bullet->draw(view, projection);
-    player->draw(view, projection);
+    {
+        bullet->draw
+        (
+            view,
+            projection,
+            glm::vec3(1.0f, 0.3f, 0.3f)
+        );
+    }
+    player->draw(view, projection, glm::vec3(1.0f));
 
     glfwSwapBuffers(window);
     glfwPollEvents();

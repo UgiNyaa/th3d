@@ -35,7 +35,12 @@ public:
     glm::mat4 model();
 
     void update(double deltatime);
-    void draw(glm::mat4 view, glm::mat4 projection);
+    void draw
+    (
+        glm::mat4 view,
+        glm::mat4 projection,
+        glm::vec3 colourmultiplier
+    );
 };
 
 #endif /* end of include guard: PLAYER_HPP */
