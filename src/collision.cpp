@@ -3,12 +3,22 @@
 
 #include <collision.hpp>
 
-bool Box::intersects(const Collider* other)
+bool Box::intersects
+(
+    glm::vec3 const& thispos,
+    Collider const& other,
+    glm::vec3 const& otherpos
+)
 {
-    switch (other->collider_type())
+    switch (other.collider_type())
     {
         case ColliderType::BOX:
-            return intersects(static_cast<const Box*>(other));
+            return intersects
+            (
+                thispos,
+                static_cast<Box const&>(other),
+                otherpos
+            );
         break;
 
         default:
@@ -16,15 +26,22 @@ bool Box::intersects(const Collider* other)
     }
 }
 
-bool Box::intersects(const Box* other)
+bool Box::intersects
+(
+    glm::vec3 const& thispos,
+    Box const& other,
+    glm::vec3 const& otherpos
+)
 {
-    auto a = this;
-    auto b = other;
+    auto amax = thispos + this->offset;
+    auto amin = thispos - this->offset;
+    auto bmax = otherpos + other.offset;
+    auto bmin = otherpos - other.offset;
 
-    return a->max.x > b->min.x
-        && a->max.y > b->min.y
-        && a->max.z > b->min.z
-        && a->min.x < b->max.x
-        && a->min.y < b->max.y
-        && a->min.z < b->max.z;
+    return amax.x > bmin.x
+        && amax.y > bmin.y
+        && amax.z > bmin.z
+        && amin.x < bmax.x
+        && amin.y < bmax.y
+        && amin.z < bmax.z;
 }

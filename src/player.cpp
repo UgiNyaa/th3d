@@ -15,7 +15,7 @@ Player::Player
     GLFWwindow* window,
     Shape * const shape
 )
-    : shape(shape)
+    : shape(shape), box(glm::vec3(0.5f))
 {
     this->window = window;
     this->bodyHorizontalAngle = 0;

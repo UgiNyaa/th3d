@@ -12,21 +12,35 @@ enum struct ColliderType
 };
 
 struct Collider {
-    Collider() {}
-
-    virtual bool intersects(const Collider* other) = 0;
     virtual ColliderType collider_type() const = 0;
+    virtual bool intersects
+    (
+        glm::vec3 const& thispos,
+        Collider const& other,
+        glm::vec3 const& otherpos
+    ) = 0;
 };
 
-struct Box : Collider {
-    glm::vec3 min, max;
-    Box(glm::vec3 min, glm::vec3 max)
-        : min(min), max(max) {}
+struct Box : public Collider {
+    glm::vec3 offset;
+    Box(glm::vec3 offset)
+        : offset(offset) {}
 
-    bool intersects(const Collider* other) override;
     ColliderType collider_type() const override
         { return ColliderType::BOX; }
-    bool intersects(const Box* other);
+
+    bool intersects
+    (
+        glm::vec3 const& thispos,
+        Collider const& other,
+        glm::vec3 const& otherpos
+    ) override;
+    bool intersects
+    (
+        glm::vec3 const& thispos,
+        Box const& other,
+        glm::vec3 const& otherpos
+    );
 };
 
 #endif /* end of include guard: COLLISION_HPP */

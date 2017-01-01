@@ -153,6 +153,7 @@ void main()
 )";
 
 Cube::Cube()
+    : box(glm::vec3(1.0f))
 {
     GLuint vsID = glCreateShader(GL_VERTEX_SHADER);
     GLuint fsID = glCreateShader(GL_FRAGMENT_SHADER);

@@ -9,6 +9,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include <collision.hpp>
+#include <player.hpp>
 #include <shapes/shape.hpp>
 
 class Bullet
@@ -24,6 +25,8 @@ public:
     std::function<float(float)> f_position_x;
     std::function<float(float)> f_position_y;
     std::function<float(float)> f_position_z;
+
+    bool intersects(Player* player);
 
     void update(float deltatime);
     void draw

@@ -8,7 +8,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include <bullet.hpp>
 #include <shapes/shape.hpp>
 #include <collision.hpp>
 
@@ -21,6 +20,7 @@ private:
     float bodyVerticalAngle;
     float lookHorizontalAngle;
     float lookVerticalAngle;
+    Box box;
 public:
     Player
     (
@@ -28,6 +28,7 @@ public:
         Shape * const shape
     );
 
+    Collider& get_collider() { return box; }
     glm::vec3 get_position() { return position; }
     float get_look_horizontal_angle() { return lookHorizontalAngle; }
     float get_look_vertical_angle() { return lookVerticalAngle; }

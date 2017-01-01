@@ -8,6 +8,7 @@
 class Shape {
 public:
     virtual std::string name() = 0;
+    virtual Collider& get_collider() = 0;
     virtual void draw
     (
         glm::mat4 model,

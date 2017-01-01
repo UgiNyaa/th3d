@@ -163,11 +163,12 @@ void draw(float deltatime)
 
     for (auto bullet : bullets)
     {
+        auto intersects = bullet->intersects(player);
         bullet->draw
         (
             view,
             projection,
-            glm::vec3(1.0f, 0.3f, 0.3f)
+            intersects ? glm::vec3(1.0f, 0.3f, 0.3f) : glm::vec3(1.0f)
         );
     }
     player->draw(view, projection, glm::vec3(1.0f));

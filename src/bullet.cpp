@@ -21,6 +21,18 @@ Bullet::Bullet(Shape * const shape)
     f_position_z = [](float t) -> float{ return 0; };
 }
 
+bool Bullet::intersects(Player* player)
+{
+    return player
+        ->get_collider()
+        .intersects
+        (
+            player->get_position(),
+            shape->get_collider(),
+            position
+        );
+}
+
 void Bullet::update(float deltatime)
 {
     gametime += deltatime;

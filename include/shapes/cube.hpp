@@ -23,11 +23,14 @@ private:
     GLuint uvbuffer;
     GLuint mvpID;
     GLuint colourmultiplierID;
+
+    Box box;
 public:
     Cube();
     ~Cube();
 
     std::string name() override { return "Cube"; }
+    Collider& get_collider() override { return box; }
     void draw
     (
         glm::mat4 model,
