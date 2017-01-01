@@ -10,10 +10,10 @@
 
 float gametime;
 
-Bullet::Bullet(const Shape* shape)
+Bullet::Bullet(Shape * const shape)
+    : shape(shape)
 {
     this->position = glm::vec3(0, 0, 0);
-    this->shape = shape;
     gametime = 0;
 
     f_position_x = [](float t) -> float{ return 0; };
@@ -28,6 +28,11 @@ void Bullet::update(float deltatime)
     position.x = f_position_x(gametime);
     position.y = f_position_y(gametime);
     position.z = f_position_z(gametime);
+}
+
+void Bullet::draw(glm::mat4 view, glm::mat4 projection)
+{
+    shape->draw(model(), view, projection);
 }
 
 glm::mat4 Bullet::model() { return glm::translate(position); }

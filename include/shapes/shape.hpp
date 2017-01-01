@@ -5,8 +5,6 @@
 
 class Shape {
 public:
-    Shape() {}
-
     virtual void draw
     (
         glm::mat4 model,

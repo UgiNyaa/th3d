@@ -6,6 +6,10 @@
 #include <shapes/shape.hpp>
 #include <shapes/cube.hpp>
 
-std::vector<Bullet*> bm_json_read(const char* bm_json, Cube* cube);
+std::vector<Bullet*> bm_json_read
+(
+    const char* bm_json,
+    Shape* shapes[]
+);
 
 #endif /* end of include guard: BMREADER_HPP */

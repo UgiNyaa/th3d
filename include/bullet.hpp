@@ -15,9 +15,9 @@ class Bullet
 {
 private:
     glm::vec3 position;
-    const Shape* shape;
+    Shape * const shape;
 public:
-    Bullet (const Shape* shape);
+    Bullet (Shape * const shape);
 
     glm::mat4 model();
 
@@ -26,6 +26,7 @@ public:
     std::function<float(float)> f_position_z;
 
     void update(float deltatime);
+    void draw(glm::mat4 view, glm::mat4 projection);
 };
 
 #endif /* end of include guard: BULLET_HPP */

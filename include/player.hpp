@@ -15,6 +15,7 @@
 class Player {
 private:
     GLFWwindow* window;
+    Shape * const shape;
     glm::vec3 position;
     std::vector<Bullet*> bullets;
     float bodyHorizontalAngle;
@@ -22,7 +23,12 @@ private:
     float lookHorizontalAngle;
     float lookVerticalAngle;
 public:
-    Player (GLFWwindow* window, std::vector<Bullet*> bullets);
+    Player
+    (
+        GLFWwindow* window,
+        Shape * const shape,
+        std::vector<Bullet*> bullets
+    );
 
     glm::vec3 get_position() { return position; }
     float get_look_horizontal_angle() { return lookHorizontalAngle; }
@@ -31,6 +37,7 @@ public:
     glm::mat4 model();
 
     void update(double deltatime);
+    void draw(glm::mat4 view, glm::mat4 projection);
 };
 
 #endif /* end of include guard: PLAYER_HPP */

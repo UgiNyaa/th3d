@@ -28,13 +28,17 @@ std::function<float(float)> math_expr_to_func(const char* math_expr)
     };
 }
 
-std::vector<Bullet*> bm_json_read(const char* bm_json, Cube* cube)
+std::vector<Bullet*> bm_json_read
+(
+    const char* bm_json,
+    Shape* shapes[]
+)
 {
     auto bullets = std::vector<Bullet*>();
     auto j = json::parse(bm_json);
     for (auto j_bullet : j)
     {
-        auto bullet = new Bullet(cube);
+        auto bullet = new Bullet(shapes[0]);
 
         auto j_x = j_bullet["x"];
         bullet->f_position_x = math_expr_to_func(j_x.get<std::string>().c_str());

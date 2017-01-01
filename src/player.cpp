@@ -10,7 +10,13 @@
 #include <player.hpp>
 #include <collision.hpp>
 
-Player::Player(GLFWwindow* window, std::vector<Bullet*> bullets)
+Player::Player
+(
+    GLFWwindow* window,
+    Shape * const shape,
+    std::vector<Bullet*> bullets
+)
+    : shape(shape)
 {
     this->window = window;
     this->bullets = bullets;
@@ -80,4 +86,9 @@ void Player::update(double deltatime)
 
         position += velocity;
     }
+}
+
+void Player::draw(glm::mat4 view, glm::mat4 projection)
+{
+    shape->draw(model(), view, projection);
 }

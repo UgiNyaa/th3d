@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 #include <vector>
 #include <fstream>
 
@@ -10,7 +11,7 @@
 
 #include <utils.hpp>
 #include <camera.hpp>
-#include <shapes/cube.hpp>
+#include <shapes/shape.hpp>
 #include <bmreader.hpp>
 
 /* ---------------- MEMBERS ---------------- */
@@ -18,7 +19,6 @@ GLFWwindow* window;
 GLuint vertexarrayID;
 Player* player;
 Camera* camera;
-Cube* cube;
 std::vector<Bullet*> bullets;
 bool open = true;
 
@@ -37,20 +37,11 @@ void draw(float deltatime);
 /* ---------------- MAIN ---------------- */
 int main(int argc, char *argv[])
 {
-    /* ---------------- BULLET MAP INITIALIZATION ---------------- */
     if (argc < 2)
     {
         fprintf(stderr, "Not enough args\n");
         return -1;
     }
-
-    std::ifstream ifs(argv[1]);
-    std::string str
-    (
-        (std::istreambuf_iterator<char>(ifs)),
-        std::istreambuf_iterator<char>()
-    );
-    bullets = bm_json_read(str.c_str(), cube);
 
 
     /* ---------------- GLFW INITIALIZATION ---------------- */
@@ -85,10 +76,24 @@ int main(int argc, char *argv[])
 
     glfwSetScrollCallback(window, scroll_callback);
 
+    /* ---------------- SHAPES INITIALIZATION ---------------- */
+    Shape* shapes[1]
+    {
+        new Cube()
+    };
+
+    /* ---------------- BULLET MAP INITIALIZATION ---------------- */
+    std::ifstream ifs(argv[1]);
+    std::string str
+    (
+        (std::istreambuf_iterator<char>(ifs)),
+        std::istreambuf_iterator<char>()
+    );
+    bullets = bm_json_read(str.c_str(), shapes);
+
     /* ---------------- COMPONENTS INITIALIZATION ---------------- */
-    player = new Player(window, bullets);
+    player = new Player(window, shapes[0], bullets);
     camera = new Camera(player);
-    cube = new Cube();
 
     /* ---------------- GL INITIALIZATION ---------------- */
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -117,12 +122,14 @@ int main(int argc, char *argv[])
     glfwTerminate();
     glfwDestroyWindow(window);
 
-    delete cube;
     delete camera;
     delete player;
 
     for (auto bullet : bullets)
         delete bullet;
+
+    for (auto shape : shapes)
+        delete shape;
 
     return 0;
 }
@@ -150,13 +157,8 @@ void draw(float deltatime)
     auto view = camera->view();
 
     for (auto bullet : bullets)
-    {
-        auto model = bullet->model();
-        cube->draw(model, view, projection);
-    }
-
-    auto model = player->model();
-    cube->draw(model, view, projection);
+        bullet->draw(view, projection);
+    player->draw(view, projection);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
