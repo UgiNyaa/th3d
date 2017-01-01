@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include <string>
+
 #include <shapes/shape.hpp>
 #include <collision.hpp>
 
@@ -24,6 +26,7 @@ public:
     Cube();
     ~Cube();
 
+    std::string name() override { return "Cube"; }
     void draw
     (
         glm::mat4 model,

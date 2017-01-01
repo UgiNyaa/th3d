@@ -1,10 +1,13 @@
 #ifndef SHAPE_HPP
 #define SHAPE_HPP
 
+#include <string>
+
 #include <collision.hpp>
 
 class Shape {
 public:
+    virtual std::string name() = 0;
     virtual void draw
     (
         glm::mat4 model,

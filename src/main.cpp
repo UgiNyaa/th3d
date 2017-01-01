@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     glfwSetScrollCallback(window, scroll_callback);
 
     /* ---------------- SHAPES INITIALIZATION ---------------- */
-    Shape* shapes[1]
+    Shape* shapes[] =
     {
         new Cube()
     };
@@ -89,7 +89,12 @@ int main(int argc, char *argv[])
         (std::istreambuf_iterator<char>(ifs)),
         std::istreambuf_iterator<char>()
     );
-    bullets = bm_json_read(str.c_str(), shapes);
+    bullets = bm_json_read
+    (
+        str.c_str(), 
+        shapes,
+        sizeof(shapes)/sizeof(shapes[0])
+    );
 
     /* ---------------- COMPONENTS INITIALIZATION ---------------- */
     player = new Player(window, shapes[0], bullets);

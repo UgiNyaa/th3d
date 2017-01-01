@@ -7,6 +7,7 @@ using json = nlohmann::json;
 
 #include <shapes/shape.hpp>
 #include <shapes/cube.hpp>
+#include <utils.hpp>
 
 std::function<float(float)> math_expr_to_func(const char* math_expr)
 {
@@ -31,13 +32,34 @@ std::function<float(float)> math_expr_to_func(const char* math_expr)
 std::vector<Bullet*> bm_json_read
 (
     const char* bm_json,
-    Shape* shapes[]
+    Shape** shapes,
+    int shapes_n
 )
 {
     auto bullets = std::vector<Bullet*>();
     auto j = json::parse(bm_json);
     for (auto j_bullet : j)
     {
+        Shape* shape;
+        auto j_shape = j_bullet["shape"].get<std::string>();
+        for (size_t i = 0; i < shapes_n; i++)
+        {
+            Shape* s = *(shapes + i);
+            if (s->name() == j_shape)
+            {
+                shape = s;
+                break;
+            }
+        }
+        // for (const Shape *s : shapes)
+        // {
+        //     if (s->name() == j_shape)
+        //     {
+        //         shape = s;
+        //         break;
+        //     }
+        // }
+
         auto bullet = new Bullet(shapes[0]);
 
         auto j_x = j_bullet["x"];
