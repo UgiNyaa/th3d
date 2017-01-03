@@ -8,7 +8,6 @@ struct Box;
 
 enum struct ColliderType
 {
-    NONE,
     BOX
 };
 
@@ -24,12 +23,6 @@ struct Collider {
     (
         glm::vec3 const& thispos,
         Collider const& other,
-        glm::vec3 const& otherpos
-    ) = 0;
-    virtual glm::vec3 correct_velocity
-    (
-        glm::vec3 const& thispos,
-        Box const& other,
         glm::vec3 const& otherpos,
         glm::vec3 const& othervel
     ) = 0;
@@ -73,7 +66,8 @@ struct Box : public Collider {
     (
         glm::vec3 const& thispos,
         Collider const& other,
-        glm::vec3 const& otherpos
+        glm::vec3 const& otherpos,
+        glm::vec3 const& othervel
     );
     bool intersects
     (
@@ -85,14 +79,16 @@ struct Box : public Collider {
     (
         glm::vec3 const& thispos,
         Box const& other,
-        glm::vec3 const& otherpos
+        glm::vec3 const& otherpos,
+        glm::vec3 const& othervel
     );
-    glm::vec3 correct_velocity
+
+
+    glm::vec3 correct_old
     (
         glm::vec3 const& thispos,
         Box const& other,
-        glm::vec3 const& otherpos,
-        glm::vec3 const& othervel
+        glm::vec3 const& otherpos
     );
 };
 
