@@ -54,6 +54,7 @@ void Player::update(double deltatime)
     lookHorizontalAngle += float(deltatime) * xdelta * 0.05f;
     lookVerticalAngle += float(deltatime) * ydelta * 0.05f;
 
+    velocity = glm::vec3(0.0f);
     if (moving)
     {
         bodyHorizontalAngle = lookHorizontalAngle;
@@ -78,9 +79,7 @@ void Player::update(double deltatime)
           + (go_up ? up : (go_down ? -up : glm::vec3(0, 0, 0)));
         move = glm::normalize(move);
 
-        auto velocity = move * float(deltatime) * 10.0f;
-
-        position += velocity;
+        velocity = move * float(deltatime) * 10.0f;
     }
 }
 

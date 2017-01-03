@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-Box testbox = Box(glm::vec3(1.0f));
+Box testbox = Box(glm::vec3(1.0f, 1.0f, 1.0f));
 void update(float deltatime)
 {
     player->update(deltatime);
@@ -147,11 +147,19 @@ void update(float deltatime)
     for (auto bullet : bullets)
         bullet->update(deltatime);
 
-    player->position = testbox.correct
+    // player->position = testbox.correct
+    // (
+    //     glm::vec3(0.0f, 5.0f, 5.0f),
+    //     player->get_collider(),
+    //     player->get_position()
+    // );
+
+    player->position += testbox.correct_velocity
     (
         glm::vec3(0.0f, 5.0f, 5.0f),
-        player->get_collider(),
-        player->get_position()
+        static_cast<Box const&>(player->get_collider()),
+        player->get_position(),
+        player->get_velocity()
     );
 
     int32_t width, height;

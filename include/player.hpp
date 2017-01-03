@@ -22,6 +22,7 @@ private:
 public:
     Shape * const shape;
     glm::vec3 position;
+    glm::vec3 velocity;
 
     Player
     (
@@ -31,6 +32,7 @@ public:
 
     Collider& get_collider() { return box; }
     glm::vec3 get_position() { return position; }
+    glm::vec3 get_velocity() { return velocity; }
     float get_look_horizontal_angle() { return lookHorizontalAngle; }
     float get_look_vertical_angle() { return lookVerticalAngle; }
 

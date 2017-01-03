@@ -144,11 +144,11 @@ glm::vec3 Box::correct
     if (!intersects)
         return otherpos;
 
-    auto amin_to_bmin = bmin - amin;
-    auto amax_to_bmax = bmax - amax;
+    auto amin_to_bmax = bmax - amin;
+    auto amax_to_bmin = bmin - amax;
     auto newotherpos = otherpos;
 
-    if (glm::length2(amin_to_bmin) < glm::length2(amax_to_bmax))
+    if (glm::length2(amin_to_bmax) < glm::length2(amax_to_bmin))
     {
         // using amin as directive
         std::cout << "using amin" << '\n';
@@ -158,7 +158,7 @@ glm::vec3 Box::correct
         std::cout << "deltax: " << amin_bmax_deltax << '\n';
         std::cout << "deltay: " << amin_bmax_deltay << '\n';
         std::cout << "deltaz: " << amin_bmax_deltaz << '\n';
-        if (amin_to_bmin.y < amin_to_bmin.x)
+        if (amin_bmax_deltay < amin_bmax_deltax)
         {
             if (amin_bmax_deltay < amin_bmax_deltaz)
             {
@@ -228,4 +228,60 @@ glm::vec3 Box::correct
     }
 
     return newotherpos;
+}
+
+glm::vec3 Box::correct_velocity
+(
+    glm::vec3 const& thispos,
+    Box const& other,
+    glm::vec3 const& otherpos,
+    glm::vec3 const& othervel
+)
+{
+    auto amax = thispos + this->offset;
+    auto amin = thispos - this->offset;
+    auto bmax = otherpos + othervel + other.offset;
+    auto bmin = otherpos + othervel - other.offset;
+
+    bool intersects = amax.x > bmin.x
+        && amax.y > bmin.y
+        && amax.z > bmin.z
+        && amin.x < bmax.x
+        && amin.y < bmax.y
+        && amin.z < bmax.z;
+
+    if (!intersects)
+        return othervel;
+
+    auto oldbmin = bmin - othervel;
+    auto oldbmax = bmax - othervel;
+    bool use_amin = oldbmin.x < amin.x
+        || oldbmin.y < amin.y
+        || oldbmin.z < amin.z;
+    bool use_amax = oldbmax.x > amax.x
+        || oldbmax.y > amax.y
+        || oldbmax.z > amax.z;
+
+    auto newothervel = othervel;
+    if (use_amax)
+    {
+        if (oldbmin.y > amax.y)
+            newothervel.y += glm::abs(amax.y - bmin.y) + 0.01f;
+        if (oldbmin.x > amax.x)
+            newothervel.x += glm::abs(amax.x - bmin.x) + 0.01f;
+        if (oldbmin.z > amax.z)
+            newothervel.z += glm::abs(amax.z - bmin.z) + 0.01f;
+    }
+
+    if (use_amin)
+    {
+        if (oldbmax.y < amin.y)
+            newothervel.y -= glm::abs(amin.y - bmax.y) + 0.01f;
+        if (oldbmax.x < amin.x)
+            newothervel.x -= glm::abs(amin.x - bmax.x) + 0.01f;
+        if (oldbmax.z < amin.z)
+            newothervel.z -= glm::abs(amin.z - bmax.z) + 0.01f;
+    }
+
+    return newothervel;
 }
