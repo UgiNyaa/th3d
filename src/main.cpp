@@ -147,12 +147,12 @@ void update(float deltatime)
     for (auto bullet : bullets)
         bullet->update(deltatime);
 
-    // player->position = testbox.correct
-    // (
-    //     glm::vec3(0.0f, 5.0f, 5.0f),
-    //     player->get_collider(),
-    //     player->get_position()
-    // );
+    player->position = testbox.correct
+    (
+        glm::vec3(0.0f, 5.0f, 5.0f),
+        player->get_collider(),
+        player->get_position()
+    );
 
     int32_t width, height;
     glfwGetWindowSize(window, &width, &height);
@@ -181,12 +181,29 @@ void draw(float deltatime)
     }
     player->draw(view, projection, glm::vec3(1.0f));
 
+    // drawing the collider cube
     player->shape->draw
     (
         glm::translate(glm::vec3(0.0f, 5.0f, 5.0f)),
         view,
         projection,
         glm::vec3(0.3f, 0.3f, 1.0f)
+    );
+    // drawing the max of collider cube
+    player->shape->draw
+    (
+        glm::translate(glm::vec3(1.0f, 6.0f, 6.0f)) * glm::scale(glm::vec3(0.1f)),
+        view,
+        projection,
+        glm::vec3(0.3f, 1.0f, 0.3f)
+    );
+    // drawing the min of collider cube
+    player->shape->draw
+    (
+        glm::translate(glm::vec3(-1.0f, 4.0f, 4.0f)) * glm::scale(glm::vec3(0.1f)),
+        view,
+        projection,
+        glm::vec3(0.3f, 1.0f, 0.3f)
     );
 
     glfwSwapBuffers(window);

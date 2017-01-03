@@ -78,6 +78,57 @@ glm::vec3 Box::correct
     glm::vec3 const& otherpos
 )
 {
+    /*
+    explanation of collision algorithm
+
+    I wanted to develop a collision algorithm, that only needs the position
+    of the one who collides into. My intention was to keep it simple. But it
+    seems that this is not quite possible.
+
+    Who does this method correct collision?
+
+    the first thing it does, it checks with a simple algorithm, if the boxes
+    intersect. If they dont, everything is fine, none has to change position.
+
+    But if they do, the thing i first try to get an idea of, is wheather they
+    collide on the max or min side. This is important, because when i correct
+    the position, I have to know if I will have to use the min or max vector.
+    The position will ultimately be aligned on either the x, y or z axis of the
+    min or max.
+
+    I keept it simple and the only thing i do, is comparing the position between
+    the mins and the maxs. The lesser one will be used as the correction vector.
+
+    The last thing left is to look for the axis the new position has to align
+    to. This is also a very simple method. I just look for the smalest delta
+    between the min and max axis.
+    (if the min vector is choosen, I use the max vector of other, because it is
+    the vector, that collides with the cube. You can draw 2 squares, define
+    the min and max, and try to collide them. Then choose the min of max of
+    sqare a by the rule above, and you will everytime see, that the oposite
+    vector of b is the one intersecting with sqare a)
+    After calculating the deltas, I just align it to the smallest. Why? Because
+    when cube b collides with cube a, I have no idea where it comes from. so I
+    just get the axis where it seems to travel the slowest and also intersecting
+    the minimal amount. However, if it gets near an egde, it is uncertain if it
+    came from one or another side from the edge. So it happes, that
+    (espessially is your framerate is low) that you get "ported" to the other
+    face of the edge. Same problem with points, but there you cam be "ported"
+    to 2 other faces.
+
+    So the quality of collision is determined by your framerate. The higher it
+    is, the better the collision. But it never is perfect. You can imagine it
+    as an asymptote. You must have an infinite framerate for perfect collision
+    (because then the delta would be infinitly small and never be interrupted
+    by the other delta getting smaller when nearing the edge or point).
+
+    The other posibility is to determin the align axis by the direction the
+    position want to travel to (with a velocity vector). It seems like the only
+    solution.
+
+    But since the collision I have now is almost perfect with high framerate,
+    I will let it stay like that.
+    */
     auto amax = thispos + this->offset;
     auto amin = thispos - this->offset;
     auto bmax = otherpos + other.offset;
@@ -93,33 +144,48 @@ glm::vec3 Box::correct
     if (!intersects)
         return otherpos;
 
-    auto amin_to_bmax = bmax - amin;
-    auto bmin_to_amax = amax - bmin;
+    auto amin_to_bmin = bmin - amin;
+    auto amax_to_bmax = bmax - amax;
     auto newotherpos = otherpos;
 
-    if (glm::length2(amin_to_bmax) > glm::length2(bmin_to_amax))
+    if (glm::length2(amin_to_bmin) < glm::length2(amax_to_bmax))
     {
         // using amin as directive
         std::cout << "using amin" << '\n';
-        if (amin_to_bmax.y < amin_to_bmax.x)
+        auto amin_bmax_deltax = glm::max(bmax.x - amin.x, 0.0f);
+        auto amin_bmax_deltay = glm::max(bmax.y - amin.y, 0.0f);
+        auto amin_bmax_deltaz = glm::max(bmax.z - amin.z, 0.0f);
+        std::cout << "deltax: " << amin_bmax_deltax << '\n';
+        std::cout << "deltay: " << amin_bmax_deltay << '\n';
+        std::cout << "deltaz: " << amin_bmax_deltaz << '\n';
+        if (amin_to_bmin.y < amin_to_bmin.x)
         {
-            if (amin_to_bmax.y < amin_to_bmax.z)
+            if (amin_bmax_deltay < amin_bmax_deltaz)
             {
                 // y is smallest
+                std::cout << "y is smallest" << '\n';
                 newotherpos.y = amin.y - other.offset.y;
             }
             else
             {
                 // z is smallest
+                std::cout << "z is smallest" << '\n';
                 newotherpos.z = amin.z - other.offset.z;
             }
         }
         else
         {
-            if (amin_to_bmax.x < amin_to_bmax.z)
+            if (amin_bmax_deltax < amin_bmax_deltaz)
             {
                 // x is smallest
+                std::cout << "x is smallest" << '\n';
                 newotherpos.x = amin.x - other.offset.x;
+            }
+            else
+            {
+                // z is smallest
+                std::cout << "z is smallest" << '\n';
+                newotherpos.z = amin.z - other.offset.z;
             }
         }
     }
@@ -127,9 +193,15 @@ glm::vec3 Box::correct
     {
         // using amax as directive
         std::cout << "using amax" << '\n';
-        if (bmin_to_amax.y < bmin_to_amax.x)
+        auto amax_bmin_deltax = glm::max(amax.x - bmin.x, 0.0f);
+        auto amax_bmin_deltay = glm::max(amax.y - bmin.y, 0.0f);
+        auto amax_bmin_deltaz = glm::max(amax.z - bmin.z, 0.0f);
+        std::cout << "deltax: " << amax_bmin_deltax << '\n';
+        std::cout << "deltay: " << amax_bmin_deltay << '\n';
+        std::cout << "deltaz: " << amax_bmin_deltaz << '\n';
+        if (amax_bmin_deltay < amax_bmin_deltax)
         {
-            if (bmin_to_amax.y < bmin_to_amax.z)
+            if (amax_bmin_deltay < amax_bmin_deltaz)
             {
                 // y is smallest
                 newotherpos.y = amax.y + other.offset.y;
@@ -142,10 +214,15 @@ glm::vec3 Box::correct
         }
         else
         {
-            if (bmin_to_amax.x < bmin_to_amax.z)
+            if (amax_bmin_deltax < amax_bmin_deltaz)
             {
                 // x is smallest
                 newotherpos.x = amax.x + other.offset.x;
+            }
+            else
+            {
+                // z is smallest
+                newotherpos.z = amax.z + other.offset.z;
             }
         }
     }
