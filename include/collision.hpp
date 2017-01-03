@@ -8,6 +8,7 @@ struct Box;
 
 enum struct ColliderType
 {
+    NONE,
     BOX
 };
 
@@ -19,7 +20,33 @@ struct Collider {
         Collider const& other,
         glm::vec3 const& otherpos
     ) = 0;
+    virtual glm::vec3 correct
+    (
+        glm::vec3 const& thispos,
+        Collider const& other,
+        glm::vec3 const& otherpos
+    ) = 0;
 };
+
+// struct None : public Collider {
+//     None() {}
+//
+//     ColliderType collider_type() const override
+//         { return ColliderType::NONE; }
+//
+//     virtual bool intersects
+//     (
+//         glm::vec3 const& thispos,
+//         Collider const& other,
+//         glm::vec3 const& otherpos
+//     ) { return false; };
+//     virtual glm::vec3 correct
+//     (
+//         glm::vec3 const& thispos,
+//         Collider const& other,
+//         glm::vec3 const& otherpos
+//     ) { return otherpos; };
+// };
 
 struct Box : public Collider {
     glm::vec3 offset;
@@ -35,7 +62,19 @@ struct Box : public Collider {
         Collider const& other,
         glm::vec3 const& otherpos
     ) override;
+    glm::vec3 correct
+    (
+        glm::vec3 const& thispos,
+        Collider const& other,
+        glm::vec3 const& otherpos
+    );
     bool intersects
+    (
+        glm::vec3 const& thispos,
+        Box const& other,
+        glm::vec3 const& otherpos
+    );
+    glm::vec3 correct
     (
         glm::vec3 const& thispos,
         Box const& other,

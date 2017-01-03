@@ -14,14 +14,15 @@
 class Player {
 private:
     GLFWwindow* window;
-    Shape * const shape;
-    glm::vec3 position;
     float bodyHorizontalAngle;
     float bodyVerticalAngle;
     float lookHorizontalAngle;
     float lookVerticalAngle;
     Box box;
 public:
+    Shape * const shape;
+    glm::vec3 position;
+
     Player
     (
         GLFWwindow* window,

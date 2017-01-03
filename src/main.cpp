@@ -139,12 +139,20 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+Box testbox = Box(glm::vec3(1.0f));
 void update(float deltatime)
 {
     player->update(deltatime);
     camera->update(deltatime);
     for (auto bullet : bullets)
         bullet->update(deltatime);
+
+    // player->position = testbox.correct
+    // (
+    //     glm::vec3(0.0f, 5.0f, 5.0f),
+    //     player->get_collider(),
+    //     player->get_position()
+    // );
 
     int32_t width, height;
     glfwGetWindowSize(window, &width, &height);
@@ -172,6 +180,14 @@ void draw(float deltatime)
         );
     }
     player->draw(view, projection, glm::vec3(1.0f));
+
+    player->shape->draw
+    (
+        glm::translate(glm::vec3(0.0f, 5.0f, 5.0f)),
+        view,
+        projection,
+        glm::vec3(0.3f, 0.3f, 1.0f)
+    );
 
     glfwSwapBuffers(window);
     glfwPollEvents();
