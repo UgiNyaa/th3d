@@ -13,6 +13,8 @@
 #include <camera.hpp>
 #include <shapes/shape.hpp>
 #include <bmreader.hpp>
+#include <drawers/drawer.hpp>
+#include <drawers/cubedrawer.hpp>
 
 /* ---------------- MEMBERS ---------------- */
 GLFWwindow* window;
@@ -21,6 +23,8 @@ Player* player;
 Camera* camera;
 std::vector<Bullet*> bullets;
 bool open = true;
+
+CubeDrawer cubedrawer;
 
 /* ---------------- CALLBACKS ---------------- */
 void scroll_callback
@@ -42,7 +46,6 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Not enough args\n");
         return -1;
     }
-
 
     /* ---------------- GLFW INITIALIZATION ---------------- */
     if (!glfwInit())
@@ -77,6 +80,8 @@ int main(int argc, char *argv[])
     glfwSetScrollCallback(window, scroll_callback);
 
     /* ---------------- SHAPES INITIALIZATION ---------------- */
+    cubedrawer.initialize();
+
     Shape* shapes[] =
     {
         new Cube()
@@ -180,7 +185,8 @@ void draw(float deltatime)
             intersects ? glm::vec3(1.0f, 0.3f, 0.3f) : glm::vec3(1.0f)
         );
     }
-    player->draw(view, projection, glm::vec3(1.0f));
+    cubedrawer.draw(player->model(), view, projection, glm::vec3(1.0f));
+    // player->draw(view, projection, glm::vec3(1.0f));
 
     // drawing the collider cube
     player->shape->draw
