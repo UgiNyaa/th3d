@@ -13,8 +13,12 @@
 #include <camera.hpp>
 #include <shapes/shape.hpp>
 #include <bmreader.hpp>
+
 #include <drawers/drawer.hpp>
 #include <drawers/cubedrawer.hpp>
+
+#include <colliders/collider.hpp>
+#include <colliders/boxcollider.hpp>
 
 /* ---------------- MEMBERS ---------------- */
 GLFWwindow* window;
@@ -84,7 +88,7 @@ int main(int argc, char *argv[])
 
     Shape* shapes[] =
     {
-        new Cube()
+        new CubeShape()
     };
 
     /* ---------------- BULLET MAP INITIALIZATION ---------------- */
@@ -144,7 +148,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-Box testbox = Box(glm::vec3(5.0f, 1.0f, 5.0f));
+BoxCollider testbox = BoxCollider(glm::vec3(5.0f, 1.0f, 5.0f));
 void update(float deltatime)
 {
     player->update(deltatime);
@@ -155,7 +159,7 @@ void update(float deltatime)
     player->position += testbox.correct
     (
         glm::vec3(0.0f, -5.0f, 0.0f),
-        static_cast<Box const&>(player->get_collider()),
+        static_cast<BoxCollider const&>(player->get_collider()),
         player->get_position(),
         player->get_velocity()
     );
@@ -189,7 +193,7 @@ void draw(float deltatime)
     // player->draw(view, projection, glm::vec3(1.0f));
 
     // drawing the collider cube
-    player->shape->draw
+    cubedrawer.draw
     (
         glm::translate(glm::vec3(0.0f, -5.0f, 0.0f)) * glm::scale(glm::vec3(5.0f, 1.0f, 5.0f)),
         view,

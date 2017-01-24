@@ -4,10 +4,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-struct BoxCollider : public Collider
-{
+#include <colliders/collider.hpp>
+
+struct BoxCollider : public Collider {
     glm::vec3 offset;
-    Box(glm::vec3 offset)
+    BoxCollider(glm::vec3 offset)
         : offset(offset) {}
 
     ColliderType collider_type() const override
@@ -29,13 +30,13 @@ struct BoxCollider : public Collider
     bool intersects
     (
         glm::vec3 const& thispos,
-        Box const& other,
+        BoxCollider const& other,
         glm::vec3 const& otherpos
     );
     glm::vec3 correct
     (
         glm::vec3 const& thispos,
-        Box const& other,
+        BoxCollider const& other,
         glm::vec3 const& otherpos,
         glm::vec3 const& othervel
     );
@@ -44,7 +45,7 @@ struct BoxCollider : public Collider
     glm::vec3 correct_old
     (
         glm::vec3 const& thispos,
-        Box const& other,
+        BoxCollider const& other,
         glm::vec3 const& otherpos
     );
 };

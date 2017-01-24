@@ -5,7 +5,7 @@
 
 #include <bullet.hpp>
 #include <shapes/shape.hpp>
-#include <shapes/cube.hpp>
+#include <shapes/cubeshape.hpp>
 
 std::vector<Bullet*> bm_json_read
 (

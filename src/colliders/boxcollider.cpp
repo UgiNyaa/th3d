@@ -20,7 +20,7 @@ bool BoxCollider::intersects
             return intersects
             (
                 thispos,
-                static_cast<Box const&>(other),
+                static_cast<BoxCollider const&>(other),
                 otherpos
             );
         break;
@@ -43,7 +43,7 @@ glm::vec3 BoxCollider::correct
             return correct
             (
                 thispos,
-                static_cast<Box const&>(other),
+                static_cast<BoxCollider const&>(other),
                 otherpos,
                 othervel
             );
@@ -57,7 +57,7 @@ glm::vec3 BoxCollider::correct
 bool BoxCollider::intersects
 (
     glm::vec3 const& thispos,
-    Box const& other,
+    BoxCollider const& other,
     glm::vec3 const& otherpos
 )
 {
@@ -77,7 +77,7 @@ bool BoxCollider::intersects
 glm::vec3 BoxCollider::correct
 (
     glm::vec3 const& thispos,
-    Box const& other,
+    BoxCollider const& other,
     glm::vec3 const& otherpos,
     glm::vec3 const& othervel
 )
@@ -134,7 +134,7 @@ glm::vec3 BoxCollider::correct
 glm::vec3 BoxCollider::correct_old
 (
     glm::vec3 const& thispos,
-    Box const& other,
+    BoxCollider const& other,
     glm::vec3 const& otherpos
 )
 {

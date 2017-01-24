@@ -10,6 +10,7 @@
 
 #include <shapes/shape.hpp>
 #include <collision.hpp>
+#include <colliders/boxcollider.hpp>
 
 class Player {
 private:
@@ -18,7 +19,7 @@ private:
     float bodyVerticalAngle;
     float lookHorizontalAngle;
     float lookVerticalAngle;
-    Box box;
+    BoxCollider box;
 public:
     Shape * const shape;
     glm::vec3 position;

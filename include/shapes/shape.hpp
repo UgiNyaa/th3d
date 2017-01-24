@@ -4,11 +4,12 @@
 #include <string>
 
 #include <collision.hpp>
+#include <colliders/collider.hpp>
 
-class Shape {
-public:
+struct Shape
+{
     virtual std::string name() = 0;
-    virtual Collider& get_collider() = 0;
+    virtual Collider& collider() = 0;
     virtual void draw
     (
         glm::mat4 model,

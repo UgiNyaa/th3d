@@ -28,7 +28,7 @@ bool Bullet::intersects(Player* player)
         .intersects
         (
             player->get_position(),
-            shape->get_collider(),
+            shape->collider(),
             position
         );
 }
