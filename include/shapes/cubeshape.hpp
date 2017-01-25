@@ -24,15 +24,15 @@ struct CubeShape : public Shape
     }
 
 
-    std::string name() override { return "Cube"; }
-    Collider& collider() override { return box; }
+    std::string name() const override { return "Cube"; }
+    Collider const& collider() const override { return box; }
     void draw
     (
         glm::mat4 model,
         glm::mat4 view,
         glm::mat4 projection,
         glm::vec3 colourmultiplier
-    ) { cube.draw(model, view, projection, colourmultiplier); }
+    ) const { cube.draw(model, view, projection, colourmultiplier); }
 };
 
 #endif /* end of include guard: CUBE_HPP */

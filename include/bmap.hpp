@@ -8,9 +8,9 @@
 #include <shapes/shape.hpp>
 #include <shapes/cubeshape.hpp>
 
-static const Shape bmap_shapes[] =
+static Shape const* bmap_shapes =
 {
-    CubeShape()
+    new CubeShape()
 };
 
 struct BMap
@@ -18,6 +18,6 @@ struct BMap
     std::vector<Bullet*> bullets;
 };
 
-Bmap& read_bmap(std::string path);
+BMap& read_bmap_json(std::string path);
 
 #endif /* end of include guard: BMAP_HPP */

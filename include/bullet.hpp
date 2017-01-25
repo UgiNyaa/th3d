@@ -16,9 +16,9 @@ class Bullet
 {
 private:
     glm::vec3 position;
-    Shape * const shape;
+    Shape const* const shape;
 public:
-    Bullet (Shape * const shape);
+    Bullet (Shape const* const shape);
 
     glm::mat4 model();
 

@@ -31,7 +31,7 @@ public:
         glm::mat4 view,
         glm::mat4 projection,
         glm::vec3 colourmultiplier
-    ) override;
+    ) const override;
 };
 
 #endif /* end of include guard: CUBEDRAWER_HPP */

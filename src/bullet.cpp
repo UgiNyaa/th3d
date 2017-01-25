@@ -10,7 +10,7 @@
 
 float gametime;
 
-Bullet::Bullet(Shape * const shape)
+Bullet::Bullet(Shape const* const shape)
     : shape(shape)
 {
     this->position = glm::vec3(0, 0, 0);
