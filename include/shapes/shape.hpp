@@ -10,6 +10,7 @@ struct Shape
 {
     virtual std::string name() const = 0;
     virtual Collider const& collider() const = 0;
+    virtual void initialize() = 0;
     virtual void draw
     (
         glm::mat4 model,

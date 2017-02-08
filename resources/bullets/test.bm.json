@@ -1,20 +1,13 @@
-[
-    {
-        "shape": "Cube",
-        "x": "sin(t)*2 + 5",
-        "y": "cos(t)*2",
-        "z": "cos(t)*2 - t/2"
-    },
-    {
-        "shape": "Cube",
-        "x": "-5",
-        "y": "sin(t)*4",
-        "z": "cos(t)*4"
-    },
-    {
-        "shape": "Cube",
-        "x": "0",
-        "y": "0",
-        "z": "0"
-    }
-]
+{
+    "scripts":
+    [
+        "resources/bullets/test_pos.cs.glsl"
+    ],
+    "bullets":
+    [
+        {
+            "shape": "Cube",
+            "position": "resources/bullets/test_pos.cs.glsl"
+        }
+    ]
+}

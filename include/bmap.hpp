@@ -3,21 +3,28 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include <bullet.hpp>
 #include <shapes/shape.hpp>
 #include <shapes/cubeshape.hpp>
 
-static Shape const* bmap_shapes =
-{
-    new CubeShape()
-};
-
 struct BMap
 {
-    std::vector<Bullet*> bullets;
-};
+    std::vector<Bullet*> Bullets;
+    float gametime;
 
-BMap& read_bmap_json(std::string path);
+    GLuint ssbo;
+    std::unique_ptr<glm::vec3[]> pos_data;
+    size_t pos_data_size;
+
+    void update(float deltatime);
+
+    static BMap from_json_file
+    (
+        std::string path,
+        const std::vector<Shape*> shapes
+    );
+};
 
 #endif /* end of include guard: BMAP_HPP */

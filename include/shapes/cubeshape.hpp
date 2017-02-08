@@ -19,13 +19,11 @@ struct CubeShape : public Shape
 
     CubeShape()
         : box(glm::vec3(1.0f))
-    {
-        cube.initialize();
-    }
-
+    { }
 
     std::string name() const override { return "Cube"; }
     Collider const& collider() const override { return box; }
+    void initialize() override { cube.initialize(); }
     void draw
     (
         glm::mat4 model,

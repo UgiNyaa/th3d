@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -13,6 +14,7 @@
 #include <camera.hpp>
 #include <shapes/shape.hpp>
 #include <bmreader.hpp>
+#include <bmap.hpp>
 
 #include <drawers/drawer.hpp>
 #include <drawers/cubedrawer.hpp>
@@ -20,12 +22,21 @@
 #include <colliders/collider.hpp>
 #include <colliders/boxcollider.hpp>
 
+GLuint cpID;
+GLuint ssbo;
+int shader_data[100];
+
 /* ---------------- MEMBERS ---------------- */
+const std::vector<Shape*> shapes =
+{
+    new CubeShape()
+};
+
 GLFWwindow* window;
 GLuint vertexarrayID;
 Player* player;
 Camera* camera;
-std::vector<Bullet*> bullets;
+BMap bmap;
 bool open = true;
 
 CubeDrawer cubedrawer;
@@ -85,11 +96,8 @@ int main(int argc, char *argv[])
 
     /* ---------------- SHAPES INITIALIZATION ---------------- */
     cubedrawer.initialize();
-
-    Shape* shapes[] =
-    {
-        new CubeShape()
-    };
+    for (auto shape : shapes)
+        shape->initialize();
 
     /* ---------------- BULLET MAP INITIALIZATION ---------------- */
     std::ifstream ifs(argv[1]);
@@ -98,16 +106,55 @@ int main(int argc, char *argv[])
         (std::istreambuf_iterator<char>(ifs)),
         std::istreambuf_iterator<char>()
     );
-    bullets = bm_json_read
-    (
-        str.c_str(),
-        shapes,
-        sizeof(shapes)/sizeof(shapes[0])
-    );
+    bmap = BMap::from_json_file(str, shapes);
 
     /* ---------------- COMPONENTS INITIALIZATION ---------------- */
     player = new Player(window, shapes[0]);
     camera = new Camera(player);
+
+    /* ---------------- COMPUTE SHADER TESTING FIELD ---------------- */
+    // glGenBuffers(1, &ssbo);
+    // glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+    // glBufferData
+    // (
+    //     GL_SHADER_STORAGE_BUFFER,
+    //     sizeof(shader_data),
+    //     &shader_data,
+    //     GL_DYNAMIC_COPY
+    // );
+    // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
+    // cpID = glCreateProgram();
+    // auto cs = glCreateShader(GL_COMPUTE_SHADER);
+    // GLuint block_index = glGetProgramResourceIndex(cpID, GL_SHADER_STORAGE_BLOCK, "Output");
+    // glShaderStorageBlockBinding(cpID, block_index, 0);
+    // const char* csSrc = R"(
+    //     #version 430
+    //     layout (local_size_x = 1, local_size_y = 1) in;
+    //     layout (std430) buffer;
+    //     layout(binding = 1) writeonly buffer Output
+    //     {
+    //         uint elements[];
+    //     } output_data;
+    //     void main()
+    //     {
+    //         uint ident = gl_GlobalInvocationID.x;
+    //         output_data.elements[ident] = 5 + ident;
+    //     }
+    // )";
+    // glShaderSource(cs, 1, &csSrc, NULL);
+    // glCompileShader(cs);
+    // int rvalue;
+    // glGetShaderiv(cs, GL_COMPILE_STATUS, &rvalue);
+    // if (!rvalue) {
+    //     fprintf(stderr, "Error in compiling the compute shader\n");
+    //     GLchar log[10240];
+    //     GLsizei length;
+    //     glGetShaderInfoLog(cs, 10239, &length, log);
+    //     fprintf(stderr, "Compiler log:\n%s\n", log);
+    //     exit(40);
+    // }
+    // glAttachShader(cpID, cs);
+    // glLinkProgram(cpID);
 
     /* ---------------- GL INITIALIZATION ---------------- */
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -139,9 +186,6 @@ int main(int argc, char *argv[])
     delete camera;
     delete player;
 
-    for (auto bullet : bullets)
-        delete bullet;
-
     for (auto shape : shapes)
         delete shape;
 
@@ -151,10 +195,20 @@ int main(int argc, char *argv[])
 BoxCollider testbox = BoxCollider(glm::vec3(5.0f, 1.0f, 5.0f));
 void update(float deltatime)
 {
+    // glUseProgram(cpID);
+    // glDispatchCompute(100, 1, 1);
+    // glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+    // GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+    // memcpy(&shader_data, p, sizeof(shader_data));
+    // glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+    // for (size_t i = 0; i < 100; i++) {
+    //     std::cout << shader_data[i] << '\n';
+    // }
+    // glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+    bmap.update(deltatime);
     player->update(deltatime);
     camera->update(deltatime);
-    for (auto bullet : bullets)
-        bullet->update(deltatime);
 
     player->position += testbox.correct
     (
@@ -179,7 +233,7 @@ void draw(float deltatime)
     auto projection = camera->projection();
     auto view = camera->view();
 
-    for (auto bullet : bullets)
+    for (auto bullet : bmap.Bullets)
     {
         auto intersects = bullet->intersects(player);
         bullet->draw
