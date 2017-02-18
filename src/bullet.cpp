@@ -52,4 +52,9 @@ void Bullet::draw
     shape->draw(model(), view, projection, colourmultiplier);
 }
 
-glm::mat4 Bullet::model() { return glm::translate(position); }
+glm::mat4 Bullet::model()
+{
+    glm::vec3 position;
+    (*pos)(position.x, position.y, position.z, 0.0f);
+    return glm::translate(position);
+}

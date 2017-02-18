@@ -15,12 +15,12 @@
 class Bullet
 {
 private:
+    glm::vec3 position;
     Shape const* const shape;
 public:
-    glm::vec3 position;
-    GLuint computeShaderProgram;
-
     Bullet (Shape const* const shape);
+
+    void (*pos)(float& x, float& y, float& z, float t);
 
     glm::mat4 model();
 

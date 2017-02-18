@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dlfcn.h>
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -188,6 +190,12 @@ int main(int argc, char *argv[])
 
     for (auto shape : shapes)
         delete shape;
+
+    // for (auto bullet : bmap.Bullets)
+    //     delete bullet;
+    //
+    // for (auto lib : bmap.Libs)
+    //     dlclose(lib);
 
     return 0;
 }

@@ -21,6 +21,8 @@ struct CubeShape : public Shape
         : box(glm::vec3(1.0f))
     { }
 
+    virtual ~CubeShape() { };
+
     std::string name() const override { return "Cube"; }
     Collider const& collider() const override { return box; }
     void initialize() override { cube.initialize(); }

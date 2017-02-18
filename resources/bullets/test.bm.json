@@ -1,13 +1,13 @@
 {
-    "scripts":
+    "libs":
     [
-        "resources/bullets/test_pos.cs.glsl"
+        "blibs/libsimple.so"
     ],
     "bullets":
     [
         {
             "shape": "Cube",
-            "position": "resources/bullets/test_pos.cs.glsl"
+            "position": "a"
         }
     ]
 }

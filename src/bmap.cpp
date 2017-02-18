@@ -1,3 +1,5 @@
+#include <dlfcn.h>
+
 #include <functional>
 
 #include <json.hpp>
@@ -10,22 +12,6 @@ using json = nlohmann::json;
 void BMap::update(float deltatime)
 {
     gametime += deltatime;
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-    GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-    memcpy(pos_data.get(), p, pos_data_size * 3 * 4);
-    glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-
-    for(auto bullet : Bullets)
-    {
-        glUseProgram(bullet->computeShaderProgram);
-        glUniform1f(0, gametime);
-
-        glDispatchCompute(1, 1, 1);
-
-        bullet->position = pos_data[0];
-        //
-        // glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-    }
 }
 
 // std::function<float(float)> math_expr_to_func2(const char* math_expr)
@@ -56,90 +42,21 @@ BMap BMap::from_json_file
 )
 {
     BMap bmap;
-    std::map<std::string, GLuint> map;
 
     auto j = json::parse(json_str);
 
-    bmap.pos_data_size = j["bullets"].size();
-    bmap.pos_data = std::unique_ptr<glm::vec3[]>
-    (
-        new glm::vec3[bmap.pos_data_size]
-    );
-
-    std::cout << "float size: " << sizeof(GLfloat) << '\n';
-    std::cout << "pos_data_size: " << bmap.pos_data_size << '\n';
-    std::cout << "size: " << bmap.pos_data_size * 3 * 4 << '\n';
-
-    glGenBuffers(1, &bmap.ssbo);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, bmap.ssbo);
-    glBufferData
-    (
-        GL_SHADER_STORAGE_BUFFER,
-        bmap.pos_data_size * 3 * 4,
-        bmap.pos_data.get(),
-        GL_DYNAMIC_COPY
-    );
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, bmap.ssbo);
-
-    for (auto j_file : j["scripts"])
+    for (auto j_lib : j["libs"])
     {
-        auto file = j_file.get<std::string>();
-        std::cout << file << '\n';
-        std::ifstream ifs(file);
-        std::string code
-        (
-            (std::istreambuf_iterator<char>(ifs)),
-            std::istreambuf_iterator<char>()
-        );
-
-        auto pID = glCreateProgram();
-        auto csID = glCreateShader(GL_COMPUTE_SHADER);
-
-        // buffer initialization
-        GLuint block_index = glGetProgramResourceIndex
-        (
-            pID,
-            GL_SHADER_STORAGE_BLOCK,
-            "output_buffer_data"
-        );
-        std::cout << block_index << '\n';
-        glShaderStorageBlockBinding(pID, block_index, 0);
-
-        // int* params;
-        // glGetProgramiv(pID, GL_ACTIVE_UNIFORM_BLOCKS, params);
-        // std::cout << *params << '\n';
-
-        // shader compiling + program linking
-        auto c_code = code.c_str();
-        glShaderSource(csID, 1, &c_code, NULL);
-        glCompileShader(csID);
-        int rvalue;
-        glGetShaderiv(csID, GL_COMPILE_STATUS, &rvalue);
-        if (!rvalue)
+        auto pathToLib = j_lib.get<std::string>();
+        auto lib = dlopen(pathToLib.c_str(), RTLD_LAZY);
+        if (!lib)
         {
-            fprintf(stderr, "Error in compiling the compute shader\n");
-            GLchar log[10240];
-            GLsizei length;
-            glGetShaderInfoLog(csID, 10239, &length, log);
-            fprintf(stderr, "Compiler log:\n%s\n", log);
-            exit(40);
+            std::cerr << dlerror() << '\n';
+            exit(1);
         }
-
-        glAttachShader(pID, csID);
-        glLinkProgram(pID);
-        glGetProgramiv(pID, GL_LINK_STATUS, &rvalue);
-        if (!rvalue) {
-            fprintf(stderr, "Error in linking compute shader program\n");
-            GLchar log[10240];
-            GLsizei length;
-            glGetProgramInfoLog(pID, 10239, &length, log);
-            fprintf(stderr, "Linker log:\n%s\n", log);
-            exit(41);
-        }
-        glUseProgram(pID);
-
-        map.insert(std::make_pair(file, pID));
+        bmap.Libs.push_back(lib);
     }
+
     for (auto j_bullet : j["bullets"])
     {
         Shape const* shape;
@@ -155,16 +72,26 @@ BMap BMap::from_json_file
         }
 
         auto bullet = new Bullet(shape);
-        bullet->computeShaderProgram = map[j_bullet["position"]];
+        auto funcname = j_bullet["position"].get<std::string>();
+        void (*func)(float& x, float& y, float& z, float t);
 
-        // auto j_x = j_bullet["x"];
-        // bullet->f_position_x = math_expr_to_func2(j_x.get<std::string>().c_str());
-        //
-        // auto j_y = j_bullet["y"];
-        // bullet->f_position_y = math_expr_to_func2(j_y.get<std::string>().c_str());
-        //
-        // auto j_z = j_bullet["z"];
-        // bullet->f_position_z = math_expr_to_func2(j_z.get<std::string>().c_str());
+        for (auto lib : bmap.Libs)
+        {
+            dlerror();
+            *(void **)(&func) = dlsym(lib, funcname.c_str());
+            if (!func)
+                std::cerr << dlerror() << '\n';
+            else
+                break;
+        }
+
+        if (!func)
+        {
+            std::cout << "func is null" << '\n';
+            exit(1);
+        }
+
+        bullet->pos = func;
 
         bmap.Bullets.push_back(bullet);
     }

@@ -8,6 +8,8 @@
 
 struct Shape
 {
+    virtual ~Shape() { };
+
     virtual std::string name() const = 0;
     virtual Collider const& collider() const = 0;
     virtual void initialize() = 0;

@@ -12,11 +12,8 @@
 struct BMap
 {
     std::vector<Bullet*> Bullets;
+    std::vector<void*> Libs;
     float gametime;
-
-    GLuint ssbo;
-    std::unique_ptr<glm::vec3[]> pos_data;
-    size_t pos_data_size;
 
     void update(float deltatime);
 
