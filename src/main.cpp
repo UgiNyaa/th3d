@@ -24,6 +24,8 @@
 #include <colliders/collider.hpp>
 #include <colliders/boxcollider.hpp>
 
+#include <game.hpp>
+
 /* ---------------- MEMBERS ---------------- */
 const std::vector<Shape*> shapes =
 {
