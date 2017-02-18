@@ -9,32 +9,6 @@
 
 using json = nlohmann::json;
 
-void BMap::update(float deltatime)
-{
-    gametime += deltatime;
-}
-
-// std::function<float(float)> math_expr_to_func2(const char* math_expr)
-// {
-//     float t;
-//
-//     exprtk::symbol_table<float> symbol_table;
-//     symbol_table.add_variable("t", t);
-//     symbol_table.add_constants();
-//
-//     exprtk::expression<float> expression;
-//     expression.register_symbol_table(symbol_table);
-//
-//     exprtk::parser<float> parser;
-//     parser.compile(math_expr, expression);
-//
-//     return [=, &t](float time) -> float
-//     {
-//         t = time;
-//         return expression.value();
-//     };
-// }
-
 BMap BMap::from_json_file
 (
     std::string json_str,

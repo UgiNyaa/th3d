@@ -7,7 +7,15 @@
     [
         {
             "shape": "Cube",
-            "position": "a"
+            "position": "zero"
+        },
+        {
+            "shape": "Cube",
+            "position": "circle_forward"
+        },
+        {
+            "shape": "Cube",
+            "position": "circle_stand"
         }
     ]
 }

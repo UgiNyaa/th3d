@@ -16,8 +16,6 @@ struct BMap
     std::vector<void*> Libs;
     float gametime;
 
-    void update(float deltatime);
-
     static BMap from_json_file
     (
         std::string path,

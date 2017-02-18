@@ -49,8 +49,8 @@ void scroll_callback
 );
 
 /* ---------------- GAME LOOP METHODS ---------------- */
-void update(float deltatime);
-void draw(float deltatime);
+void update();
+void draw();
 
 /* ---------------- MAIN ---------------- */
 int main(int argc, char *argv[])
@@ -127,11 +127,10 @@ int main(int argc, char *argv[])
 
     while (open)
     {
-        auto dt = float(glfwGetTime() - lastTime);
-        t.add(dt);
+        t.add(float(glfwGetTime() - lastTime));
         lastTime = glfwGetTime();
-        update(dt);
-        draw(dt);
+        update();
+        draw();
     }
 
     /* ---------------- TERMINATION ---------------- */
@@ -155,11 +154,10 @@ int main(int argc, char *argv[])
 }
 
 BoxCollider testbox = BoxCollider(glm::vec3(5.0f, 1.0f, 5.0f));
-void update(float deltatime)
+void update()
 {
-    bmap.update(deltatime);
-    player->update(deltatime);
-    camera->update(deltatime);
+    player->update(t.delta_seconds());
+    camera->update(t.delta_seconds());
 
     player->position += testbox.correct
     (
@@ -177,7 +175,7 @@ void update(float deltatime)
         open = false;
 }
 
-void draw(float deltatime)
+void draw()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
