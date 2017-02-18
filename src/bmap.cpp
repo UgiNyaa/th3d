@@ -38,6 +38,7 @@ void BMap::update(float deltatime)
 BMap BMap::from_json_file
 (
     std::string json_str,
+    const Time& t,
     const std::vector<Shape*> shapes
 )
 {
@@ -71,7 +72,7 @@ BMap BMap::from_json_file
             }
         }
 
-        auto bullet = new Bullet(shape);
+        auto bullet = new Bullet(t, shape);
         auto funcname = j_bullet["position"].get<std::string>();
         void (*func)(float& x, float& y, float& z, float t);
 

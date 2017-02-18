@@ -13,9 +13,9 @@
 #include <glm/gtx/transform.hpp>
 
 #include <utils.hpp>
+#include <time.hpp>
 #include <camera.hpp>
 #include <shapes/shape.hpp>
-#include <bmreader.hpp>
 #include <bmap.hpp>
 
 #include <drawers/drawer.hpp>
@@ -24,16 +24,13 @@
 #include <colliders/collider.hpp>
 #include <colliders/boxcollider.hpp>
 
-GLuint cpID;
-GLuint ssbo;
-int shader_data[100];
-
 /* ---------------- MEMBERS ---------------- */
 const std::vector<Shape*> shapes =
 {
     new CubeShape()
 };
 
+Time t;
 GLFWwindow* window;
 GLuint vertexarrayID;
 Player* player;
@@ -108,55 +105,11 @@ int main(int argc, char *argv[])
         (std::istreambuf_iterator<char>(ifs)),
         std::istreambuf_iterator<char>()
     );
-    bmap = BMap::from_json_file(str, shapes);
+    bmap = BMap::from_json_file(str, t, shapes);
 
     /* ---------------- COMPONENTS INITIALIZATION ---------------- */
     player = new Player(window, shapes[0]);
     camera = new Camera(player);
-
-    /* ---------------- COMPUTE SHADER TESTING FIELD ---------------- */
-    // glGenBuffers(1, &ssbo);
-    // glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-    // glBufferData
-    // (
-    //     GL_SHADER_STORAGE_BUFFER,
-    //     sizeof(shader_data),
-    //     &shader_data,
-    //     GL_DYNAMIC_COPY
-    // );
-    // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
-    // cpID = glCreateProgram();
-    // auto cs = glCreateShader(GL_COMPUTE_SHADER);
-    // GLuint block_index = glGetProgramResourceIndex(cpID, GL_SHADER_STORAGE_BLOCK, "Output");
-    // glShaderStorageBlockBinding(cpID, block_index, 0);
-    // const char* csSrc = R"(
-    //     #version 430
-    //     layout (local_size_x = 1, local_size_y = 1) in;
-    //     layout (std430) buffer;
-    //     layout(binding = 1) writeonly buffer Output
-    //     {
-    //         uint elements[];
-    //     } output_data;
-    //     void main()
-    //     {
-    //         uint ident = gl_GlobalInvocationID.x;
-    //         output_data.elements[ident] = 5 + ident;
-    //     }
-    // )";
-    // glShaderSource(cs, 1, &csSrc, NULL);
-    // glCompileShader(cs);
-    // int rvalue;
-    // glGetShaderiv(cs, GL_COMPILE_STATUS, &rvalue);
-    // if (!rvalue) {
-    //     fprintf(stderr, "Error in compiling the compute shader\n");
-    //     GLchar log[10240];
-    //     GLsizei length;
-    //     glGetShaderInfoLog(cs, 10239, &length, log);
-    //     fprintf(stderr, "Compiler log:\n%s\n", log);
-    //     exit(40);
-    // }
-    // glAttachShader(cpID, cs);
-    // glLinkProgram(cpID);
 
     /* ---------------- GL INITIALIZATION ---------------- */
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -175,6 +128,7 @@ int main(int argc, char *argv[])
     while (open)
     {
         auto dt = float(glfwGetTime() - lastTime);
+        t.add(dt);
         lastTime = glfwGetTime();
         update(dt);
         draw(dt);
@@ -191,11 +145,11 @@ int main(int argc, char *argv[])
     for (auto shape : shapes)
         delete shape;
 
-    // for (auto bullet : bmap.Bullets)
-    //     delete bullet;
-    //
-    // for (auto lib : bmap.Libs)
-    //     dlclose(lib);
+    for (auto bullet : bmap.Bullets)
+        delete bullet;
+
+    for (auto lib : bmap.Libs)
+        dlclose(lib);
 
     return 0;
 }
@@ -203,17 +157,6 @@ int main(int argc, char *argv[])
 BoxCollider testbox = BoxCollider(glm::vec3(5.0f, 1.0f, 5.0f));
 void update(float deltatime)
 {
-    // glUseProgram(cpID);
-    // glDispatchCompute(100, 1, 1);
-    // glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-    // GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-    // memcpy(&shader_data, p, sizeof(shader_data));
-    // glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-    // for (size_t i = 0; i < 100; i++) {
-    //     std::cout << shader_data[i] << '\n';
-    // }
-    // glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
     bmap.update(deltatime);
     player->update(deltatime);
     camera->update(deltatime);

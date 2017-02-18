@@ -10,8 +10,9 @@
 
 float gametime;
 
-Bullet::Bullet(Shape const* const shape)
-    : shape(shape)
+Bullet::Bullet(const Time& t, const Shape* const shape)
+    : t(t)
+    , shape(shape)
 {
     this->position = glm::vec3(0, 0, 0);
     gametime = 0;
@@ -23,6 +24,9 @@ Bullet::Bullet(Shape const* const shape)
 
 bool Bullet::intersects(Player* player)
 {
+    glm::vec3 position;
+    (*pos)(position.x, position.y, position.z, t.full_seconds());
+
     return player
         ->get_collider()
         .intersects
@@ -55,6 +59,6 @@ void Bullet::draw
 glm::mat4 Bullet::model()
 {
     glm::vec3 position;
-    (*pos)(position.x, position.y, position.z, 0.0f);
+    (*pos)(position.x, position.y, position.z, t.full_seconds());
     return glm::translate(position);
 }

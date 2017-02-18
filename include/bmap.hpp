@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <bullet.hpp>
+#include <time.hpp>
 #include <shapes/shape.hpp>
 #include <shapes/cubeshape.hpp>
 
@@ -20,6 +21,7 @@ struct BMap
     static BMap from_json_file
     (
         std::string path,
+        const Time& t,
         const std::vector<Shape*> shapes
     );
 };

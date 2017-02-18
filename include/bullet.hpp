@@ -10,15 +10,17 @@
 
 #include <collision.hpp>
 #include <player.hpp>
+#include <time.hpp>
 #include <shapes/shape.hpp>
 
 class Bullet
 {
 private:
+    const Time& t;
     glm::vec3 position;
-    Shape const* const shape;
+    const Shape* const shape;
 public:
-    Bullet (Shape const* const shape);
+    Bullet (const Time& t, const Shape* const shape);
 
     void (*pos)(float& x, float& y, float& z, float t);
 
