@@ -30,7 +30,7 @@ public:
     std::function<float(float)> f_position_y;
     std::function<float(float)> f_position_z;
 
-    bool intersects(Player* player);
+    bool intersects(Player& player);
 
     void update(float deltatime);
     void draw

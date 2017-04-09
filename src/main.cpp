@@ -1,8 +1,6 @@
 #include <game.hpp>
 #include <games/testgame/testgame.hpp>
 
-using namespace std::placeholders;
-
 int main(int argc, char *argv[])
 {
     TestGame test;

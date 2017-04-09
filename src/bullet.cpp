@@ -22,16 +22,16 @@ Bullet::Bullet(const Time& t, const Shape* const shape)
     f_position_z = [](float t) -> float{ return 0; };
 }
 
-bool Bullet::intersects(Player* player)
+bool Bullet::intersects(Player& player)
 {
     glm::vec3 position;
     (*pos)(position.x, position.y, position.z, t.full_seconds());
 
     return player
-        ->get_collider()
+        .box
         .intersects
         (
-            player->get_position(),
+            player.position,
             shape->collider(),
             position
         );

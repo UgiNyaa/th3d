@@ -7,11 +7,11 @@
 
 TestGame::TestGame()
     : shapes({ new CubeShape() })
+    , player()
+    , camera()
     , testbox(glm::vec3(5.0f, 1.0f, 5.0f))
 {
 }
-
-// BoxCollider TestGame::testbox(glm::vec3(5.0f, 1.0f, 5.0f));
 
 void TestGame::initialize(int argc, char *argv[])
 {
@@ -31,18 +31,12 @@ void TestGame::initialize(int argc, char *argv[])
     );
     bmap = BMap::from_json_file(str, t, shapes);
 
-    player = new Player(window, shapes[0]);
-    camera = new Camera(player);
-
     loadPNG("resources/textures/kawaii.png");
 }
 
 void TestGame::deinitialize()
 {
     Game::deinitialize();
-
-    delete camera;
-    delete player;
 
     for (auto shape : shapes)
         delete shape;
@@ -56,15 +50,14 @@ void TestGame::deinitialize()
 
 void TestGame::update()
 {
-    player->update(t.delta_seconds());
-    camera->update(t.delta_seconds());
+    update_player(t.delta_seconds());
 
-    player->position += testbox.correct
+    player.position += testbox.correct
     (
         glm::vec3(0.0f, -5.0f, 0.0f),
-        static_cast<BoxCollider const&>(player->get_collider()),
-        player->get_position(),
-        player->get_velocity()
+        player.box,
+        player.position,
+        player.velocity
     );
 
     int32_t width, height;
@@ -79,8 +72,8 @@ void TestGame::draw()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    auto projection = camera->projection();
-    auto view = camera->view();
+    auto projection = camera_projection();
+    auto view = camera_view();
 
     for (auto bullet : bmap.Bullets)
     {
@@ -92,7 +85,7 @@ void TestGame::draw()
             intersects ? glm::vec3(1.0f, 0.3f, 0.3f) : glm::vec3(1.0f)
         );
     }
-    cubedrawer.draw(player->model(), view, projection, glm::vec3(1.0f));
+    cubedrawer.draw(player_model(), view, projection, glm::vec3(1.0f));
     // player->draw(view, projection, glm::vec3(1.0f));
 
     // drawing the collider cube
@@ -115,6 +108,8 @@ void TestGame::scroll_callback
     double yoffset
 )
 {
-    auto game = *(TestGame*)window->game;
-    game.camera->on_scroll(window, xoffset, yoffset);
+    auto game = (TestGame*)window->game;
+    game->camera.distance -= yoffset;
+    if (game->camera.distance < 0)
+        game->camera.distance = 0;
 }

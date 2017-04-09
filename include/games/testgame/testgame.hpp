@@ -19,13 +19,19 @@ class TestGame
 protected:
     const std::vector<Shape*> shapes;
 
-    Player* player;
-    Camera* camera;
+    Player player;
+    Camera camera;
 
     BMap bmap;
 
     CubeDrawer cubedrawer;
     BoxCollider testbox;
+
+    void update_player(float dt);
+
+    glm::mat4 player_model();
+    glm::mat4 camera_view();
+    glm::mat4 camera_projection();
 
     static void scroll_callback
     (

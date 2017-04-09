@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
@@ -12,40 +10,25 @@
 #include <collision.hpp>
 #include <colliders/boxcollider.hpp>
 
-class Player {
-private:
-    GLFWwindow* window;
-    float bodyHorizontalAngle;
-    float bodyVerticalAngle;
-    float lookHorizontalAngle;
-    float lookVerticalAngle;
-    BoxCollider box;
-public:
-    Shape * const shape;
+struct Player
+{
     glm::vec3 position;
     glm::vec3 velocity;
+    float body_horizontal_angle;
+    float body_vertical_angle;
+    float head_horizontal_angle;
+    float head_vertical_angle;
+    BoxCollider box;
 
-    Player
-    (
-        GLFWwindow* window,
-        Shape * const shape
-    );
-
-    Collider& get_collider() { return box; }
-    glm::vec3 get_position() { return position; }
-    glm::vec3 get_velocity() { return velocity; }
-    float get_look_horizontal_angle() { return lookHorizontalAngle; }
-    float get_look_vertical_angle() { return lookVerticalAngle; }
-
-    glm::mat4 model();
-
-    void update(double deltatime);
-    void draw
-    (
-        glm::mat4 view,
-        glm::mat4 projection,
-        glm::vec3 colourmultiplier
-    );
+    Player()
+        : position(0, 0, 0)
+        , velocity(0, 0, 0)
+        , body_horizontal_angle(0)
+        , body_vertical_angle(0)
+        , head_horizontal_angle(0)
+        , head_vertical_angle(0)
+        , box(glm::vec3(0.5f))
+    { }
 };
 
 #endif /* end of include guard: PLAYER_HPP */
