@@ -7,7 +7,7 @@ Game::~Game()
     deinitialize();
 }
 
-void Game::initialize()
+void Game::initialize(int argc, char *argv[])
 {
     if (GAME_INITIALIZED)
     {
@@ -31,6 +31,7 @@ void Game::initialize()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     window = glfwCreateWindow(1280, 720, "Tutorial 01", NULL, NULL);
+    window->game = this;
 
     if (window == nullptr)
     {
@@ -46,7 +47,12 @@ void Game::initialize()
         exit(1);
     }
 
+    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
     glGenVertexArrays(1, &vertexarrayID);
     glBindVertexArray(vertexarrayID);
 
@@ -55,6 +61,7 @@ void Game::initialize()
 
 void Game::deinitialize()
 {
+    window->game = NULL;
     glDeleteVertexArrays(1, &vertexarrayID);
     glfwTerminate();
     glfwDestroyWindow(window);

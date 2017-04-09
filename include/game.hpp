@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <memory>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -11,6 +12,11 @@
 #include <glm/gtx/transform.hpp>
 
 #include <time.hpp>
+
+struct GLFWwindow
+{
+    class Game* game;
+};
 
 class Game
 {
@@ -25,7 +31,7 @@ public:
     Game() { };
     virtual ~Game();
 
-    virtual void initialize();
+    virtual void initialize(int argc, char *argv[]);
     virtual void update();
     virtual void draw();
     virtual void deinitialize();
