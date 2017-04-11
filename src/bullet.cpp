@@ -8,18 +8,10 @@
 
 #include <bullet.hpp>
 
-float gametime;
-
 Bullet::Bullet(const Time& t, const Shape* const shape)
     : t(t)
     , shape(shape)
 {
-    this->position = glm::vec3(0, 0, 0);
-    gametime = 0;
-
-    f_position_x = [](float t) -> float{ return 0; };
-    f_position_y = [](float t) -> float{ return 0; };
-    f_position_z = [](float t) -> float{ return 0; };
 }
 
 bool Bullet::intersects(Player& player)
@@ -35,15 +27,6 @@ bool Bullet::intersects(Player& player)
             shape->collider(),
             position
         );
-}
-
-void Bullet::update(float deltatime)
-{
-    gametime += deltatime;
-
-    position.x = f_position_x(gametime);
-    position.y = f_position_y(gametime);
-    position.z = f_position_z(gametime);
 }
 
 void Bullet::draw
