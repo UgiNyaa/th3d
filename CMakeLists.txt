@@ -16,5 +16,5 @@ file(COPY resources DESTINATION .)
 
 include_directories(include)
 add_executable(th3d ${th3d_SOURCES})
-target_link_libraries(th3d GLEW glfw GL png dl)
+target_link_libraries(th3d GLEW glfw GL png)
 cotire(th3d)

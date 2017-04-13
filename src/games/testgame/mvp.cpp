@@ -43,3 +43,15 @@ glm::mat4 TestGame::camera_projection()
         0.1f, 100.0f
     );
 }
+
+glm::mat4 TestGame::unit_model(const Unit& u)
+{
+    return glm::translate(u.pos) *
+        glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
+}
+
+glm::mat4 TestGame::bullet_model(const Bullet& b)
+{
+    return glm::translate(b.pos) *
+        glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
+}

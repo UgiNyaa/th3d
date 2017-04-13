@@ -1,12 +1,16 @@
 #ifndef TESTGAME_HPP
 #define TESTGAME_HPP
 
+#include <json.hpp>
+#include <exprtk.hpp>
+#include <glm/gtx/norm.hpp>
+
 #include <game.hpp>
 #include <time.hpp>
 #include <player.hpp>
 #include <camera.hpp>
-#include <bmap.hpp>
 #include <bullet.hpp>
+#include <unit.hpp>
 
 #include <drawers/cubedrawer.hpp>
 
@@ -22,7 +26,8 @@ protected:
     Player player;
     Camera camera;
 
-    BMap bmap;
+    std::vector<Unit*> units;
+    std::vector<Bullet*> processing_bullets;
 
     CubeDrawer cubedrawer;
     BoxCollider testbox;
@@ -32,6 +37,8 @@ protected:
     glm::mat4 player_model();
     glm::mat4 camera_view();
     glm::mat4 camera_projection();
+    glm::mat4 unit_model(const Unit& u);
+    glm::mat4 bullet_model(const Bullet& b);
 
     static void scroll_callback
     (
@@ -39,6 +46,8 @@ protected:
         double xoffset,
         double yoffset
     );
+
+    void init_bmap(std::string json);
 
 public:
     TestGame();

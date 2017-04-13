@@ -13,26 +13,28 @@
 #include <time.hpp>
 #include <shapes/shape.hpp>
 
-class Bullet
+struct Bullet
 {
-private:
-    const Time& t;
-    const Shape* const shape;
-public:
-    Bullet (const Time& t, const Shape* const shape);
+    const Shape* shape;
+    glm::vec3 pos;
+    glm::vec3 player_dir;
 
-    void (*pos)(float& x, float& y, float& z, float t);
+    exprtk::expression<float> vel_x_expr;
+    exprtk::expression<float> vel_y_expr;
+    exprtk::expression<float> vel_z_expr;
+    exprtk::expression<float> start_expr;
 
-    glm::mat4 model();
+    int start() const
+    {
+        return static_cast<int>(start_expr.value());
+    }
 
-    bool intersects(Player& player);
-
-    void draw
-    (
-        glm::mat4 view,
-        glm::mat4 projection,
-        glm::vec3 colourmultiplier
-    );
+    void vel(float& x, float& y, float& z) const
+    {
+        x = vel_x_expr.value();
+        y = vel_y_expr.value();
+        z = vel_z_expr.value();
+    }
 };
 
 #endif /* end of include guard: BULLET_HPP */

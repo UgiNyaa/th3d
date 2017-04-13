@@ -1,21 +1,28 @@
 {
-    "libs":
-    [
-        "blibs/libsimple.so"
-    ],
-    "bullets":
-    [
+  "units": [
+    {
+      "shape": "Cube",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "velocity": {
+        "x": "0",
+        "y": "cos(t*5)/3",
+        "z": "0"
+      },
+      "bullets": [
         {
-            "shape": "Cube",
-            "position": "zero"
-        },
-        {
-            "shape": "Cube",
-            "position": "circle_forward"
-        },
-        {
-            "shape": "Cube",
-            "position": "circle_stand"
+          "shape": "Cube",
+          "start": "t>=0",
+          "velocity": {
+            "x": "px*min(t/3+1, 5)",
+            "y": "py*min(t/3+1, 5)",
+            "z": "pz*min(t/3+1, 5)"
+          }
         }
-    ]
+      ]
+    }
+  ]
 }
