@@ -74,7 +74,7 @@ void TestGame::update()
         {
             if (u->bullets[i]->start())
             {
-                to_remove.push_back(i);
+                to_remove.push_back(i - to_remove.size());
                 processing_bullets.push_back(u->bullets[i]);
 
                 u->bullets[i]->pos = u->pos;
