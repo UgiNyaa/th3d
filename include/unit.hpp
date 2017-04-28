@@ -3,6 +3,7 @@
 
 #include <shapes/shape.hpp>
 #include <bullet.hpp>
+#include <engine.hpp>
 
 struct Unit
 {
@@ -11,6 +12,7 @@ struct Unit
     glm::vec3 player_dir;
 
     std::vector<Bullet*> bullets;
+    std::vector<Engine*> engines;
     exprtk::expression<float> vel_x_expr;
     exprtk::expression<float> vel_y_expr;
     exprtk::expression<float> vel_z_expr;

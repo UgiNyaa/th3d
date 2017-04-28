@@ -48,6 +48,41 @@ void TestGame::init_bmap(std::string json)
             parser.compile(vel_z_expr_str, u->vel_z_expr);
         }
 
+        for(auto j_engine : j_unit["engines"])
+        {
+            Shape const* shape;
+            auto j_shape = j_engine["shape"].get<std::string>();
+            for (size_t i = 0; i < shapes.size(); i++)
+            {
+                auto s = shapes[i];
+                if (s->name() == j_shape)
+                {
+                    shape = s;
+                    break;
+                }
+            }
+
+            auto e = new Engine();
+
+            {
+                e->x_src = j_engine["velocity"]["x"].get<std::string>();
+                e->y_src = j_engine["velocity"]["y"].get<std::string>();
+                e->z_src = j_engine["velocity"]["z"].get<std::string>();
+                e->n = j_engine["n"].get<int>();
+
+                exprtk::symbol_table<float> symbol_table;
+                symbol_table.add_constants();
+                symbol_table.add_variable("t", t.full);
+
+                e->symbol_table = symbol_table;
+
+                e->shape = shape;
+                e->pos = u->pos;
+            }
+
+            u->engines.push_back(e);
+        }
+
         for(auto j_bullet : j_unit["bullets"])
         {
             Shape const* shape;

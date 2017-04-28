@@ -11,6 +11,7 @@
 #include <camera.hpp>
 #include <bullet.hpp>
 #include <unit.hpp>
+#include <engine.hpp>
 
 #include <drawers/cubedrawer.hpp>
 

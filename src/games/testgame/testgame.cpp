@@ -82,6 +82,14 @@ void TestGame::update()
         }
         for (auto i : to_remove)
             u->bullets.erase(u->bullets.begin() + i);
+
+        for (size_t i = 0; i < u->engines.size(); i++)
+        {
+            u->engines[i]->generate_into(processing_bullets);
+        }
+
+        if (u->engines.size() > 0)
+            u->engines.erase(u->engines.begin(), u->engines.end());
     }
 
     for (auto b : processing_bullets)
