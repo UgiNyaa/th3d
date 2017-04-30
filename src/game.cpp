@@ -89,9 +89,9 @@ void Game::loop()
 
     while (open)
     {
-        t.add(float(glfwGetTime() - lastTime));
         lastTime = glfwGetTime();
         update();
         draw();
+        t.add(float(glfwGetTime() - lastTime));
     }
 }

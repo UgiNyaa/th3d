@@ -8,20 +8,18 @@
 struct Unit
 {
     const Shape* shape;
-    glm::vec3 pos;
-    glm::vec3 player_dir;
 
     std::vector<Bullet*> bullets;
     std::vector<Engine*> engines;
-    exprtk::expression<float> vel_x_expr;
-    exprtk::expression<float> vel_y_expr;
-    exprtk::expression<float> vel_z_expr;
+    exprtk::expression<float> pos_x_expr;
+    exprtk::expression<float> pos_y_expr;
+    exprtk::expression<float> pos_z_expr;
 
-    void vel(float& x, float& y, float& z) const
+    void pos(float& x, float& y, float& z) const
     {
-        x = vel_x_expr.value();
-        y = vel_y_expr.value();
-        z = vel_z_expr.value();
+        x = pos_x_expr.value();
+        y = pos_y_expr.value();
+        z = pos_z_expr.value();
     }
 };
 

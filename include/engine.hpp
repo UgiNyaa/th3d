@@ -3,52 +3,54 @@
 
 #include <string>
 
+#include <exprtk.hpp>
 #include <bullet.hpp>
 
 struct Engine
 {
     const Shape* shape;
-    glm::vec3 pos;
-    size_t n;
-    std::string x_src;
-    std::string y_src;
-    std::string z_src;
-    exprtk::symbol_table<float> symbol_table;
 
-    void replace_everything(std::string& str, const std::string& from, const std::string& to)
-    {
-        if(from.empty())
-            return;
-        size_t start_pos = 0;
-        while((start_pos = str.find(from, start_pos)) != std::string::npos)
-        {
-            str.replace(start_pos, from.length(), to);
-            start_pos += to.length();
-        }
-    }
+    size_t n;
+    size_t r;
+
+    glm::vec3 unit_pos;
+
+    exprtk::symbol_table<float> symbol_table;
+    std::string pos_x_expr_str;
+    std::string pos_y_expr_str;
+    std::string pos_z_expr_str;
+
+    Engine()
+        : shape(nullptr)
+        , n(0)
+        , r(0)
+        , unit_pos(0, 0, 0)
+        , pos_x_expr_str("")
+        , pos_y_expr_str("")
+        , pos_z_expr_str("")
+    { }
 
     void generate_into(std::vector<Bullet*>& bullets)
     {
-        symbol_table.add_constant("n", 0);
+        symbol_table.add_constant("i", 0);
         for (size_t i = 0; i < n; i++)
         {
             auto b = new Bullet();
 
-            symbol_table.remove_variable("n");
-            symbol_table.add_constant("n", i+1);
+            symbol_table.remove_variable("i");
+            symbol_table.add_constant("i", i+1);
 
-            b->vel_x_expr.register_symbol_table(symbol_table);
-            b->vel_y_expr.register_symbol_table(symbol_table);
-            b->vel_z_expr.register_symbol_table(symbol_table);
-            b->start_expr.register_symbol_table(symbol_table);
+            b->pos_x_expr.register_symbol_table(symbol_table);
+            b->pos_y_expr.register_symbol_table(symbol_table);
+            b->pos_z_expr.register_symbol_table(symbol_table);
 
             exprtk::parser<float> parser;
-            parser.compile(x_src, b->vel_x_expr);
-            parser.compile(y_src, b->vel_y_expr);
-            parser.compile(z_src, b->vel_z_expr);
+            parser.compile(pos_x_expr_str, b->pos_x_expr);
+            parser.compile(pos_y_expr_str, b->pos_y_expr);
+            parser.compile(pos_z_expr_str, b->pos_z_expr);
 
             b->shape = shape;
-            b->pos = pos;
+            b->unit_pos = unit_pos;
 
             bullets.push_back(b);
         }

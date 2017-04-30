@@ -41,10 +41,15 @@ void TestGame::deinitialize()
     for (auto shape : shapes)
         delete shape;
 
+    for (auto b : processing_bullets)
+        delete b;
+
     for (auto u : units)
     {
         for (auto b : u->bullets)
             delete b;
+        for (auto e : u->engines)
+            delete e;
         delete u;
     }
 }
@@ -63,42 +68,16 @@ void TestGame::update()
 
     for (auto u : units)
     {
-        glm::vec3 vel;
-        u->vel(vel.x, vel.y, vel.z);
-        u->pos += vel * t.delta_seconds();
-
-        u->player_dir = glm::normalize(player.position - u->pos);
-
-        std::vector<size_t> to_remove;
-        for (size_t i = 0; i < u->bullets.size(); i++)
-        {
-            if (u->bullets[i]->start())
-            {
-                to_remove.push_back(i - to_remove.size());
-                processing_bullets.push_back(u->bullets[i]);
-
-                u->bullets[i]->pos = u->pos;
-            }
-        }
-        for (auto i : to_remove)
-            u->bullets.erase(u->bullets.begin() + i);
-
         for (size_t i = 0; i < u->engines.size(); i++)
         {
+            float ux, uy, uz;
+            u->pos(ux, uy, uz);
+            u->engines[i]->unit_pos = glm::vec3(ux, uy, uz);
             u->engines[i]->generate_into(processing_bullets);
         }
 
         if (u->engines.size() > 0)
             u->engines.erase(u->engines.begin(), u->engines.end());
-    }
-
-    for (auto b : processing_bullets)
-    {
-        glm::vec3 vel;
-        b->vel(vel.x, vel.y, vel.z);
-        b->pos += vel * t.delta_seconds();
-
-        b->player_dir = glm::normalize(player.position - b->pos);
     }
 
     int32_t width, height;

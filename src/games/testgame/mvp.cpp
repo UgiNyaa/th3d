@@ -46,12 +46,16 @@ glm::mat4 TestGame::camera_projection()
 
 glm::mat4 TestGame::unit_model(const Unit& u)
 {
-    return glm::translate(u.pos) *
+    float ux, uy, uz;
+    u.pos(ux, uy, uz);
+    return glm::translate(glm::vec3(ux, uy, uz)) *
         glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
 }
 
 glm::mat4 TestGame::bullet_model(const Bullet& b)
 {
-    return glm::translate(b.pos) *
+    float bx, by, bz;
+    b.pos(bx, by, bz);
+    return glm::translate(glm::vec3(bx, by, bz)) *
         glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
 }

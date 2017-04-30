@@ -16,24 +16,23 @@
 struct Bullet
 {
     const Shape* shape;
-    glm::vec3 pos;
-    glm::vec3 player_dir;
 
-    exprtk::expression<float> vel_x_expr;
-    exprtk::expression<float> vel_y_expr;
-    exprtk::expression<float> vel_z_expr;
-    exprtk::expression<float> start_expr;
+    glm::vec3 unit_pos;
 
-    int start() const
+    exprtk::expression<float> pos_x_expr;
+    exprtk::expression<float> pos_y_expr;
+    exprtk::expression<float> pos_z_expr;
+
+    Bullet()
+        : shape(nullptr)
+        , unit_pos(0, 0, 0)
+    { }
+
+    void pos(float& x, float& y, float& z) const
     {
-        return static_cast<int>(start_expr.value());
-    }
-
-    void vel(float& x, float& y, float& z) const
-    {
-        x = vel_x_expr.value();
-        y = vel_y_expr.value();
-        z = vel_z_expr.value();
+        x = pos_x_expr.value() + unit_pos.x;
+        y = pos_y_expr.value() + unit_pos.y;
+        z = pos_z_expr.value() + unit_pos.z;
     }
 };
 
