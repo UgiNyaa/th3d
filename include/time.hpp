@@ -3,10 +3,13 @@
 
 struct Time
 {
-    float delta;
     float full;
+    float delta;
 
-    Time() { }
+    Time()
+        : full(0)
+        , delta(0)
+    { }
 
     float full_seconds() const { return full; }
     float delta_seconds() const { return delta; }
