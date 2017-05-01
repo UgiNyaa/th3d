@@ -115,7 +115,8 @@ void TestGame::draw()
         );
     }
 
-    cubedrawer.draw(player_model(), view, projection, glm::vec3(1.0f));
+    if (camera.distance != 0)
+        cubedrawer.draw(player_model(), view, projection, glm::vec3(1.0f));
     // player->draw(view, projection, glm::vec3(1.0f));
 
     // drawing the collider cube

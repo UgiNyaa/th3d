@@ -1,6 +1,9 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
+#include <stdlib.h>
+#include <time.h>
+
 #include <string>
 
 #include <exprtk.hpp>
@@ -28,17 +31,22 @@ struct Engine
         , pos_x_expr_str("")
         , pos_y_expr_str("")
         , pos_z_expr_str("")
-    { }
+    {
+        srand(time(NULL));
+    }
 
     void generate_into(std::vector<Bullet*>& bullets)
     {
         symbol_table.add_constant("i", 0);
+        symbol_table.add_constant("r", 0);
         for (size_t i = 0; i < n; i++)
         {
             auto b = new Bullet();
 
             symbol_table.remove_variable("i");
+            symbol_table.remove_variable("r");
             symbol_table.add_constant("i", i+1);
+            symbol_table.add_constant("r", ((float) rand() / (RAND_MAX)));
 
             b->pos_x_expr.register_symbol_table(symbol_table);
             b->pos_y_expr.register_symbol_table(symbol_table);
