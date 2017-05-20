@@ -30,15 +30,9 @@
           "shape": "Cube",
           "n": 900,
           "position": {
-<<<<<<< HEAD
-            "x": "10*sin((2*pi/(n/5))*i) * sin(2*pi * r1)",
-            "y": "10*cos(2*pi * r1)",
-            "z": "10*cos((2*pi/(n/5))*i) * sin(2*pi * r1)"
-=======
             "x": "t*sin((2*pi/sqrt(n))*(floor(i/sqrt(n))+1)) * sin( pi * ((i%sqrt(n))/sqrt(n)) )",
             "y": "t*cos( pi * ((i%sqrt(n))/sqrt(n)) )",
             "z": "t*cos((2*pi/sqrt(n))*(floor(i/sqrt(n))+1)) * sin( pi * ((i%sqrt(n))/sqrt(n)) )"
->>>>>>> 5d58b6baa512e86ea79d7989b0c6bc02963c9be1
           }
         }
       ]
