@@ -18,6 +18,8 @@ struct Engine
 
     glm::vec3 unit_pos;
 
+    std::map<std::string, std::string> variables;
+
     exprtk::symbol_table<float> symbol_table;
     std::string pos_x_expr_str;
     std::string pos_y_expr_str;
@@ -32,21 +34,33 @@ struct Engine
         , pos_y_expr_str("")
         , pos_z_expr_str("")
     {
-        srand(time(NULL));
     }
 
     void generate_into(std::vector<Bullet*>& bullets)
     {
         symbol_table.add_constant("i", 0);
-        symbol_table.add_constant("r", 0);
+        for(const auto& ent : variables)
+            symbol_table.add_constant(ent.first, 0);
         for (size_t i = 0; i < n; i++)
         {
             auto b = new Bullet();
 
             symbol_table.remove_variable("i");
-            symbol_table.remove_variable("r");
+            for(const auto& ent : variables)
+                symbol_table.remove_variable(ent.first);
+
             symbol_table.add_constant("i", i+1);
-            symbol_table.add_constant("r", ((float) rand() / (RAND_MAX)));
+            for(const auto& ent : variables)
+            {
+                exprtk::expression<float> expr;
+                expr.register_symbol_table(symbol_table);
+
+                exprtk::parser<float> parser;
+                if (!parser.compile(ent.second, expr))
+                    std::cerr << "error while parsing variable " << ent.first << '\n';
+
+                symbol_table.add_constant(ent.first, expr.value());
+            }
 
             b->pos_x_expr.register_symbol_table(symbol_table);
             b->pos_y_expr.register_symbol_table(symbol_table);

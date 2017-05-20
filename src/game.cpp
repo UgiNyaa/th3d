@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <game.hpp>
 
 static bool GAME_INITIALIZED = false;
@@ -92,6 +94,6 @@ void Game::loop()
         lastTime = glfwGetTime();
         update();
         draw();
-        t.add(float(glfwGetTime() - lastTime));
+        t.add(std::min(float(glfwGetTime() - lastTime), 0.2f));
     }
 }

@@ -1,0 +1,30 @@
+{
+  "units": [
+    {
+      "shape": "Cube",
+      "position": {
+        "x": "0",
+        "y": "0.1*sin(t*4)",
+        "z": "10"
+      },
+      "engines": [
+        {
+          "shape": "Cube",
+          "n": 500,
+          "variables": [
+            { "name": "speed", "expr": "rand(1, 5)" },
+            { "name": "dir1r1", "expr": "rand(0, 1)" },
+            { "name": "dir1r2", "expr": "rand(0, 1)" },
+            { "name": "dir2r1", "expr": "rand(0, 1)" },
+            { "name": "dir2r2", "expr": "rand(0, 1)" }
+          ],
+          "position": {
+            "x": "if(t<7, min(5,t)*speed*sin(dir1r1 * 2 * pi) * sin(if(dir1r2<0.5, (2*dir1r2)^(1/3) / 2, (-abs(2*dir1r2-2)^(1/3) + 2) / 2) * pi), 5*speed*sin(dir1r1 * 2 * pi) * sin(if(dir1r2<0.5, (2*dir1r2)^(1/3) / 2, (-abs(2*dir1r2-2)^(1/3) + 2) / 2) * pi) + (t-7)*sin(dir2r1*2*pi) * sin(dir2r2*pi))",
+            "y": "if(t<7, min(5,t)*speed*cos(                       if(dir1r2<0.5, (2*dir1r2)^(1/3) / 2, (-abs(2*dir1r2-2)^(1/3) + 2) / 2) * pi), 5*speed*cos(if(dir1r2<0.5, (2*dir1r2)^(1/3) / 2, (-abs(2*dir1r2-2)^(1/3) + 2) / 2) * pi)                        + (t-7)*cos(dir2r2*pi))",
+            "z": "if(t<7, min(5,t)*speed*cos(dir1r1 * 2 * pi) * sin(if(dir1r2<0.5, (2*dir1r2)^(1/3) / 2, (-abs(2*dir1r2-2)^(1/3) + 2) / 2) * pi), 5*speed*cos(dir1r1 * 2 * pi) * sin(if(dir1r2<0.5, (2*dir1r2)^(1/3) / 2, (-abs(2*dir1r2-2)^(1/3) + 2) / 2) * pi) + (t-7)*cos(dir2r1*2*pi) * sin(dir2r2*pi))"
+          }
+        }
+      ]
+    }
+  ]
+}

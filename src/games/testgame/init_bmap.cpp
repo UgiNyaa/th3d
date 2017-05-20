@@ -1,6 +1,15 @@
+#include <stdlib.h>
+#include <time.h>
+
 #include <games/testgame/testgame.hpp>
 
 using json = nlohmann::json;
+
+template<typename T>
+inline T rand_exprtk(T from, T to)
+{
+    return ((float) rand() / (RAND_MAX)) * (to - from) + from;
+}
 
 void TestGame::init_bmap(std::string json)
 {
@@ -63,11 +72,23 @@ void TestGame::init_bmap(std::string json)
 
                 e->n = j_engine["n"].get<int>();
 
+                srand(time(NULL));
                 e->symbol_table.add_constants();
                 e->symbol_table.add_constant("n", e->n);
                 e->symbol_table.add_variable("t", t.full);
+                e->symbol_table.add_function("rand", rand_exprtk);
 
                 e->shape = shape;
+            }
+
+
+            for(auto j_variable : j_engine["variables"])
+            {
+                e->variables.insert
+                ({
+                    j_variable["name"].get<std::string>(),
+                    j_variable["expr"].get<std::string>()
+                });
             }
 
             u->engines.push_back(e);
