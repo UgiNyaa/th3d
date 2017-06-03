@@ -1,99 +1,80 @@
 #include <stdlib.h>
 #include <time.h>
+#include <lua.hpp>
 
 #include <games/testgame/testgame.hpp>
 
-using json = nlohmann::json;
-
-template<typename T>
-inline T rand_exprtk(T from, T to)
+std::string replace(std::string source, const std::string& from, const std::string& to)
 {
-    return ((float) rand() / (RAND_MAX)) * (to - from) + from;
+    auto str = source;
+    size_t start_pos = str.find(from);
+    if(start_pos == std::string::npos)
+        return str;
+    str.replace(start_pos, from.length(), to);
+    return str;
 }
 
-void TestGame::init_bmap(std::string json)
+int set_lua_path( lua_State* L, const char* path )
 {
-    auto j = json::parse(json);
+    lua_getglobal( L, "package" );
+    lua_getfield( L, -1, "path" ); // get field "path" from table at top of stack (-1)
+    std::string cur_path = lua_tostring( L, -1 ); // grab path string from top of stack
+    cur_path.append( ";" ); // do your path magic here
+    cur_path.append( path );
+    lua_pop( L, 1 ); // get rid of the string on the stack we just pushed on line 5
+    lua_pushstring( L, cur_path.c_str() ); // push the new one
+    lua_setfield( L, -2, "path" ); // set the field "path" in table at -2 with value at top of stack
+    lua_pop( L, 1 ); // get rid of package table from top of stack
+    return 0; // all done!
+}
 
-    for (auto j_unit : j["units"])
+void print_error(lua_State* state)
+{
+  // The error message is on top of the stack.
+  // Fetch it, print it and then pop it off the stack.
+  const char* message = lua_tostring(state, -1);
+  puts(message);
+  lua_pop(state, 1);
+}
+
+void TestGame::init_bmap(std::string lua)
+{
+    lua_State *state = luaL_newstate();
+
+    luaL_openlibs(state);
+
+    int result;
+
+    set_lua_path(state, replace(lua, "world.lua", "?.lua").c_str());
+    result = luaL_loadfile(state, lua.c_str());
+
+    if (result != LUA_OK)
     {
-        auto u = new Unit();
-
-        auto j_shape = j_unit["shape"].get<std::string>();
-        for (size_t i = 0; i < shapes.size(); i++)
-        {
-            auto s = shapes[i];
-            if (s->name() == j_shape)
-            {
-                u->shape = s;
-                break;
-            }
-        }
-
-        {
-            auto pos_x_expr_str = j_unit["position"]["x"].get<std::string>();
-            auto pos_y_expr_str = j_unit["position"]["y"].get<std::string>();
-            auto pos_z_expr_str = j_unit["position"]["z"].get<std::string>();
-
-            exprtk::symbol_table<float> symbol_table;
-            symbol_table.add_constants();
-            symbol_table.add_variable("t", t.full);
-
-            u->pos_x_expr.register_symbol_table(symbol_table);
-            u->pos_y_expr.register_symbol_table(symbol_table);
-            u->pos_z_expr.register_symbol_table(symbol_table);
-
-            exprtk::parser<float> parser;
-            parser.compile(pos_x_expr_str, u->pos_x_expr);
-            parser.compile(pos_y_expr_str, u->pos_y_expr);
-            parser.compile(pos_z_expr_str, u->pos_z_expr);
-        }
-
-        for(auto j_engine : j_unit["engines"])
-        {
-            Shape const* shape;
-            auto j_shape = j_engine["shape"].get<std::string>();
-            for (size_t i = 0; i < shapes.size(); i++)
-            {
-                auto s = shapes[i];
-                if (s->name() == j_shape)
-                {
-                    shape = s;
-                    break;
-                }
-            }
-
-            auto e = new Engine();
-
-            {
-                e->pos_x_expr_str = j_engine["position"]["x"].get<std::string>();
-                e->pos_y_expr_str = j_engine["position"]["y"].get<std::string>();
-                e->pos_z_expr_str = j_engine["position"]["z"].get<std::string>();
-
-                e->n = j_engine["n"].get<int>();
-
-                srand(time(NULL));
-                e->symbol_table.add_constants();
-                e->symbol_table.add_constant("n", e->n);
-                e->symbol_table.add_variable("t", t.full);
-                e->symbol_table.add_function("rand", rand_exprtk);
-
-                e->shape = shape;
-            }
-
-
-            for(auto j_variable : j_engine["variables"])
-            {
-                e->variables.insert
-                ({
-                    j_variable["name"].get<std::string>(),
-                    j_variable["expr"].get<std::string>()
-                });
-            }
-
-            u->engines.push_back(e);
-        }
-
-        units.push_back(u);
+        std::cout << "error occured in lua" << '\n';
+        print_error(state);
+        exit(-1);
     }
+
+    result = lua_pcall(state, 0, LUA_MULTRET, 0);
+
+    if ( result != LUA_OK )
+    {
+        std::cout << "error occured in lua" << '\n';
+        print_error(state);
+        exit(-1);
+    }
+
+    lua_getglobal(state, "world");
+
+    lua_getfield(state, -1, "units");
+    lua_pushnil(state);
+
+    while (lua_next(state, -2))
+    {
+        lua_pop(state, 1);
+    }
+    lua_pop(state, 1);
+
+    std::cout << "exit" << '\n';
+    exit(1);
 }
