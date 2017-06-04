@@ -4,6 +4,12 @@
 
 #include <games/testgame/testgame.hpp>
 
+#ifdef DEBUG
+    #define DOUT(x) std::cout << x << '\n';
+#else
+    #define DOUT(x)
+#endif
+
 std::string replace(std::string source, const std::string& from, const std::string& to)
 {
     auto str = source;
@@ -28,53 +34,165 @@ int set_lua_path( lua_State* L, const char* path )
     return 0; // all done!
 }
 
-void print_error(lua_State* state)
+void print_error(lua_State* L)
 {
   // The error message is on top of the stack.
   // Fetch it, print it and then pop it off the stack.
-  const char* message = lua_tostring(state, -1);
+  const char* message = lua_tostring(L, -1);
   puts(message);
-  lua_pop(state, 1);
+  lua_pop(L, 1);
 }
 
 void TestGame::init_bmap(std::string lua)
 {
-    lua_State *state = luaL_newstate();
+    DOUT("initializing bmap from " + lua + " path")
 
-    luaL_openlibs(state);
+    lua_State* L = luaL_newstate();
+    // STATE: 0
+    DOUT("STATE: 0")
+
+    luaL_openlibs(L);
+    DOUT("lua standard libraries loaded")
 
     int result;
 
-    set_lua_path(state, replace(lua, "world.lua", "?.lua").c_str());
-    result = luaL_loadfile(state, lua.c_str());
+    set_lua_path(L, replace(lua, "world.lua", "?.lua").c_str());
+    result = luaL_loadfile(L, lua.c_str());
+    DOUT("lua file " + lua + " loaded")
+    DOUT("result: " + result)
 
     if (result != LUA_OK)
     {
         std::cout << "error occured in lua" << '\n';
-        print_error(state);
+        print_error(L);
         exit(-1);
     }
 
-    result = lua_pcall(state, 0, LUA_MULTRET, 0);
+    result = lua_pcall(L, 0, LUA_MULTRET, 0);
+    DOUT("running the file")
+    DOUT("result: " + result)
 
     if ( result != LUA_OK )
     {
         std::cout << "error occured in lua" << '\n';
-        print_error(state);
+        print_error(L);
         exit(-1);
     }
 
-    lua_getglobal(state, "world");
+    lua_getglobal(L, "world");
+    // STATE: world
+    DOUT("STATE: world")
 
-    lua_getfield(state, -1, "units");
-    lua_pushnil(state);
+    lua_newtable(L);
+    // STATE: world - {}
+    DOUT("STATE: world - {}")
 
-    while (lua_next(state, -2))
+    lua_setfield(L, -2, "bullets");
+    // STATE: world
+    DOUT("STATE: world")
+
+    lua_getfield(L, -1, "units");
+    // STATE: world - units
+    DOUT("STATE: world - units")
+
+    lua_pushnil(L);
+    // STATE: world - units - nil
+    DOUT("STATE: world - units - nil")
+
+    while (lua_next(L, -2))
     {
-        lua_pop(state, 1);
-    }
-    lua_pop(state, 1);
+        // STATE: world - units - key - value
+        DOUT("STATE: world - units - key - value")
 
-    std::cout << "exit" << '\n';
-    exit(1);
+        auto u = new Unit();
+        u->id = lua_tointeger(L, -2);
+        u->L = L;
+        u->t = &t;
+
+        lua_getfield(L, -1, "shape");
+        // STATE: world - units - key - value - shape
+        DOUT("STATE: world - units - key - value - shape");
+
+        auto shape = lua_tostring(L, -1);
+
+        lua_pop(L, 1);
+        // STATE: world - units - key - value
+        DOUT("STATE: world - units - key - value");
+
+        for (size_t i = 0; i < shapes.size(); i++)
+        {
+            auto s = shapes[i];
+            if (s->name() == shape)
+            {
+                u->shape = s;
+                break;
+            }
+        }
+
+        lua_getfield(L, -1, "patterns");
+        // STATE: world - units - key - value - patterns
+        DOUT("STATE: world - units - key - value - patterns");
+
+        lua_pushnil(L);
+        // STATE: world - units - key - value - patterns - nil
+        DOUT("STATE: world - units - key - value - patterns - nil");
+
+        while (lua_next(L, -2))
+        {
+            // STATE: world - units - key - value - patterns - key - value
+            DOUT("STATE: world - units - key - value - patterns - key - value");
+
+            auto p = new Pattern();
+            p->id = lua_tointeger(L, -2);
+            p->unit_id = u->id;
+            p->L = L;
+            p->t = &t;
+
+            lua_getfield(L, -1, "shape");
+            // STATE: world - units - key - value - patterns - key - value
+            // STATE: - shape
+            DOUT("STATE: world - units - key - value - patterns - key - value - shape");
+
+            auto shape = lua_tostring(L, -1);
+
+            lua_pop(L, 1);
+            // STATE: world - units - key - value - patterns - key - value
+            DOUT("STATE: world - units - key - value - patterns - key - value");
+
+            for (size_t i = 0; i < shapes.size(); i++)
+            {
+                auto s = shapes[i];
+                if (s->name() == shape)
+                {
+                    p->shape = s;
+                    break;
+                }
+            }
+
+            u->patterns.push_back(p);
+
+            lua_pop(L, 1);
+            // STATE: world - units - key - value - patterns - key
+            DOUT("STATE: world - units - key - value - patterns - key");
+        }
+        // STATE: world - units - key - value - patterns
+        DOUT("STATE: world - units - key - value - patterns");
+        lua_pop(L, 1);
+        // STATE: world - units - key - value
+        DOUT("STATE: world - units - key - value");
+
+        units.push_back(u);
+
+        lua_pop(L, 1);
+        // STATE: world - units - key
+        DOUT("STATE: world - units - key");
+    }
+    // STATE: world - units
+    DOUT("STATE: world - units");
+
+    lua_pop(L, 2);
+    // STATE: 0
+    DOUT("STATE:0")
+
+    DOUT("initialized")
 }

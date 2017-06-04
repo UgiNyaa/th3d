@@ -8,6 +8,8 @@ include(cotire)
 
 project(th3d)
 
+#add_definitions(-DDEBUG)
+
 file(GLOB_RECURSE th3d_SOURCES "src/*.cpp")
 file(GLOB_RECURSE th3d_HEADERS "include/*.hpp")
 file(GLOB_RECURSE th3d_SHADERS "shaders/*.glsl")

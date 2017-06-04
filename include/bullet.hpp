@@ -1,38 +1,88 @@
 #ifndef BULLET_HPP
 #define BULLET_HPP
 
-#include <functional>
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
-
-#include <collision.hpp>
-#include <player.hpp>
+#include <lua.hpp>
 #include <time.hpp>
 #include <shapes/shape.hpp>
+
+#ifdef DEBUG
+    #define DOUT(x) std::cout << x << '\n';
+#else
+    #define DOUT(x)
+#endif
 
 struct Bullet
 {
     const Shape* shape;
 
-    glm::vec3 unit_pos;
-
-    exprtk::expression<float> pos_x_expr;
-    exprtk::expression<float> pos_y_expr;
-    exprtk::expression<float> pos_z_expr;
+    lua_State* L;
+    int id;
+    Time* t;
+    float ux, uy, uz;
+    float start;
 
     Bullet()
         : shape(nullptr)
-        , unit_pos(0, 0, 0)
+        , id(0)
+        , t(nullptr)
     { }
 
     void pos(float& x, float& y, float& z) const
     {
-        x = pos_x_expr.value() + unit_pos.x;
-        y = pos_y_expr.value() + unit_pos.y;
-        z = pos_z_expr.value() + unit_pos.z;
+        DOUT("bullet position calculation of id")
+        DOUT(id)
+
+        // STATE: 0
+        DOUT("STATE: 0")
+
+        lua_getglobal(L, "world");
+        // STATE: world
+        DOUT("STATE: world")
+
+        lua_getfield(L, -1, "bullets");
+        // STATE: world - bullets
+        DOUT("STATE: world - bullets")
+
+        lua_geti(L, -1, id);
+        // STATE: world - bullets - bullets[id]
+        DOUT("STATE: world - bullets - bullets[id]")
+
+        lua_getfield(L, -1, "position");
+        // STATE: world - bullets - bullets[id] - position
+        DOUT("STATE: world - bullets - bullets[id] - position")
+
+        lua_insert(L, -2);
+        // STATE: world -ubblets- position - bullets[id]
+        DOUT("STATE: world - bullets - position - bullets[id]")
+
+        lua_pushnumber(L, t->full);
+        // STATE: world - bullets - bullets[id] - position - t
+        DOUT("STATE: world - bullets - position - bullets[id] - t")
+
+        int result = lua_pcall(L, 2, 3, 0);
+        // STATE: world - bullets - bullets[id] - x - y - z
+        DOUT("STATE: world - bullets - x - y - z")
+
+        if ( result != LUA_OK )
+        {
+            std::cout << "error occured in lua" << '\n';
+            const char* message = lua_tostring(L, -1);
+            puts(message);
+            lua_pop(L, 1);
+            exit(-1);
+        }
+
+        z = lua_tonumber(L, -1) + uz;
+        y = lua_tonumber(L, -2) + uy;
+        x = lua_tonumber(L, -3) + ux;
+
+        DOUT(x)
+        DOUT(y)
+        DOUT(z)
+
+        lua_pop(L, 5);
+        // STATE: 0
+        DOUT("STATE: 0")
     }
 };
 

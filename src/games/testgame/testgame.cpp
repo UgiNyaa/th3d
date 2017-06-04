@@ -48,8 +48,8 @@ void TestGame::deinitialize()
     {
         for (auto b : u->bullets)
             delete b;
-        for (auto e : u->engines)
-            delete e;
+        for (auto p : u->patterns)
+            delete p;
         delete u;
     }
 }
@@ -68,16 +68,18 @@ void TestGame::update()
 
     for (auto u : units)
     {
-        for (size_t i = 0; i < u->engines.size(); i++)
+        for (size_t i = 0; i < u->patterns.size(); i++)
         {
             float ux, uy, uz;
             u->pos(ux, uy, uz);
-            u->engines[i]->unit_pos = glm::vec3(ux, uy, uz);
-            u->engines[i]->generate_into(processing_bullets);
+            u->patterns[i]->ux = ux;
+            u->patterns[i]->uy = uy;
+            u->patterns[i]->uz = uz;
+            u->patterns[i]->start(processing_bullets);
         }
 
-        if (u->engines.size() > 0)
-            u->engines.erase(u->engines.begin(), u->engines.end());
+        if (u->patterns.size() > 0)
+            u->patterns.erase(u->patterns.begin(), u->patterns.end());
     }
 
     int32_t width, height;
@@ -106,13 +108,14 @@ void TestGame::draw()
 
     for (auto b : processing_bullets)
     {
-        b->shape->draw
-        (
-            bullet_model(*b),
-            view,
-            projection,
-            glm::vec3(0.3f, 1.0f, 0.3f)
-        );
+        if (b->start <= t.full)
+            b->shape->draw
+            (
+                bullet_model(*b),
+                view,
+                projection,
+                glm::vec3(0.3f, 1.0f, 0.3f)
+            );
     }
 
     if (camera.distance != 0)
