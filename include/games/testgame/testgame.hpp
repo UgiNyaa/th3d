@@ -1,7 +1,6 @@
 #ifndef TESTGAME_HPP
 #define TESTGAME_HPP
 
-#include <exprtk.hpp>
 #include <glm/gtx/norm.hpp>
 
 #include <game.hpp>
