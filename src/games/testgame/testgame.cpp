@@ -23,12 +23,6 @@ void TestGame::initialize(int argc, char *argv[])
     for (auto shape : shapes)
         shape->initialize();
 
-    std::ifstream ifs(argv[1]);
-    std::string str
-    (
-        (std::istreambuf_iterator<char>(ifs)),
-        std::istreambuf_iterator<char>()
-    );
     init_bmap(argv[1]);
 
     loadPNG("resources/textures/kawaii.png");

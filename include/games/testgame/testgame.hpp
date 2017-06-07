@@ -1,6 +1,8 @@
 #ifndef TESTGAME_HPP
 #define TESTGAME_HPP
 
+#include <memory>
+
 #include <glm/gtx/norm.hpp>
 
 #include <game.hpp>
@@ -9,6 +11,7 @@
 #include <camera.hpp>
 #include <bullet.hpp>
 #include <unit.hpp>
+#include <mcmap.hpp>
 
 #include <drawers/cubedrawer.hpp>
 
@@ -26,6 +29,8 @@ protected:
 
     std::vector<Unit*> units;
     std::vector<Bullet*> processing_bullets;
+
+    std::unique_ptr<MCMap> mcmap;
 
     CubeDrawer cubedrawer;
     BoxCollider testbox;

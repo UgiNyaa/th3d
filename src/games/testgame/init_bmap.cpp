@@ -10,17 +10,7 @@
     #define DOUT(x)
 #endif
 
-std::string replace(std::string source, const std::string& from, const std::string& to)
-{
-    auto str = source;
-    size_t start_pos = str.find(from);
-    if(start_pos == std::string::npos)
-        return str;
-    str.replace(start_pos, from.length(), to);
-    return str;
-}
-
-int set_lua_path( lua_State* L, const char* path )
+int set_lua_path(lua_State* L, std::string path)
 {
     lua_getglobal( L, "package" );
     lua_getfield( L, -1, "path" ); // get field "path" from table at top of stack (-1)
@@ -56,9 +46,9 @@ void TestGame::init_bmap(std::string lua)
 
     int result;
 
-    set_lua_path(L, replace(lua, "world.lua", "?.lua").c_str());
-    result = luaL_loadfile(L, lua.c_str());
-    DOUT("lua file " + lua + " loaded")
+    set_lua_path(L, lua + "/?.lua");
+    result = luaL_loadfile(L, (lua + "/world.lua").c_str());
+    DOUT("lua " + lua + " loaded")
     DOUT("result: " + result)
 
     if (result != LUA_OK)
@@ -88,6 +78,19 @@ void TestGame::init_bmap(std::string lua)
     DOUT("STATE: world - {}")
 
     lua_setfield(L, -2, "bullets");
+    // STATE: world
+    DOUT("STATE: world")
+
+    lua_getfield(L, -1, "mcmap");
+    // STATE: world - mcmap
+    DOUT("STATE: world - mcmap")
+
+    std::string mcmap_path = lua_tostring(L, -1);
+    std::cout << "lua: " << lua << '\n';
+    std::cout << "mcmap path: " << mcmap_path << '\n';
+    mcmap = std::make_unique<MCMap>(lua + mcmap_path);
+
+    lua_pop(L, 1);
     // STATE: world
     DOUT("STATE: world")
 
