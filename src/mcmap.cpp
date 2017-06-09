@@ -127,7 +127,53 @@ void MCMap::do_chunck(std::ifstream& in)
         exit(-1);
     }
 
+    uLong sourceLen = length;
+    uLongf destLen = length;
+    auto source = new unsigned char[sourceLen];
+    auto dest = new unsigned char[destLen];
+    std::vector<uint8_t> decompressed;
+
+    for (size_t i = 0; i < sourceLen; i++)
+        in.get(*reinterpret_cast<char*>(&source[i]));
+
+    z_stream strm;
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+    strm.avail_in = sourceLen;
+    strm.next_in = source;
     
+    inflateInit(&strm);
+    do
+    {
+        strm.avail_out = destLen;
+        strm.next_out = dest;
+
+        int result = inflate(&strm, Z_NO_FLUSH);
+
+        decompressed.insert
+        (
+            decompressed.end(), 
+            reinterpret_cast<uint8_t*>(dest), 
+            reinterpret_cast<uint8_t*>(strm.next_out)
+        );
+
+        if (result != Z_OK)
+            std::cout << "aaaaaaaaa" << '\n';
+    } while (strm.avail_out == 0); 
+    inflateEnd(&strm);
+
+    delete source;
+    delete dest;
+
+    std::cout << "decompressed: " << '\n';
+    for (size_t i = 0; i < decompressed.size(); i++)
+    {
+        std::cout << (int)dest[i] << ' ';
+        if (i % 5 == 0)
+            std::cout << '\n';
+    }
+    std::cout << "size: " << decompressed.size() << '\n';
 
     exit(-1);
 }
