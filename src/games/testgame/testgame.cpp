@@ -26,6 +26,8 @@ void TestGame::initialize(int argc, char *argv[])
     init_bmap(argv[1]);
 
     loadPNG("resources/textures/kawaii.png");
+
+    mcmap->initialize();
 }
 
 void TestGame::deinitialize()
@@ -124,6 +126,8 @@ void TestGame::draw()
         projection,
         glm::vec3(0.3f, 0.3f, 1.0f)
     );
+
+    mcmap->draw(view, projection);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

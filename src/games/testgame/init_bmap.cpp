@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <time.h>
-#include <lua5.3/lua.hpp>
+#include <lua.hpp>
 
 #include <games/testgame/testgame.hpp>
 

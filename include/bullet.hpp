@@ -1,7 +1,7 @@
 #ifndef BULLET_HPP
 #define BULLET_HPP
 
-#include <lua5.3/lua.hpp>
+#include <lua.hpp>
 #include <time.hpp>
 #include <shapes/shape.hpp>
 

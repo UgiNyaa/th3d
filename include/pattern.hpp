@@ -1,7 +1,7 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include <lua5.3/lua.hpp>
+#include <lua.hpp>
 #include <shapes/shape.hpp>
 #include <bullet.hpp>
 

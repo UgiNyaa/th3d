@@ -9,13 +9,13 @@ glm::mat4 TestGame::player_model()
 glm::mat4 TestGame::camera_view()
 {
     glm::vec3 direction = glm::vec3(
-    cos(player.head_vertical_angle) *
-        sin(player.head_horizontal_angle),
+        cos(player.head_vertical_angle) *
+            sin(player.head_horizontal_angle),
 
-    sin(player.head_vertical_angle),
+        sin(player.head_vertical_angle),
 
-    cos(player.head_vertical_angle) *
-        cos(player.head_horizontal_angle)
+        cos(player.head_vertical_angle) *
+            cos(player.head_horizontal_angle)
     );
     glm::vec3 right = glm::vec3(
         sin(player.head_horizontal_angle - 3.14f/2.0f),
