@@ -2,7 +2,7 @@
 #define ENGINE_HPP
 
 #include <lua.hpp>
-#include <shapes/shape.hpp>
+#include <shape.hpp>
 #include <bullet.hpp>
 
 #ifdef DEBUG

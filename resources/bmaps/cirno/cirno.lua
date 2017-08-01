@@ -2,7 +2,7 @@ local PerfectFreeze = require "perfect-freeze"
 
 local cirno = {}
 
-cirno.shape = "Cube"
+cirno.shape = "block"
 
 cirno.position = function(t)
   x = 0

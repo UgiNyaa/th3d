@@ -81,19 +81,6 @@ void TestGame::init_bmap(std::string lua)
     // STATE: world
     DOUT("STATE: world")
 
-    lua_getfield(L, -1, "mcmap");
-    // STATE: world - mcmap
-    DOUT("STATE: world - mcmap")
-
-    std::string mcmap_path = lua_tostring(L, -1);
-    std::cout << "lua: " << lua << '\n';
-    std::cout << "mcmap path: " << mcmap_path << '\n';
-    mcmap = std::make_unique<MCMap>(lua + mcmap_path);
-
-    lua_pop(L, 1);
-    // STATE: world
-    DOUT("STATE: world")
-
     lua_getfield(L, -1, "units");
     // STATE: world - units
     DOUT("STATE: world - units")
@@ -116,21 +103,16 @@ void TestGame::init_bmap(std::string lua)
         // STATE: world - units - key - value - shape
         DOUT("STATE: world - units - key - value - shape");
 
-        auto shape = lua_tostring(L, -1);
+        std::string model(lua_tostring(L, -1));
 
         lua_pop(L, 1);
         // STATE: world - units - key - value
         DOUT("STATE: world - units - key - value");
 
-        for (size_t i = 0; i < shapes.size(); i++)
-        {
-            auto s = shapes[i];
-            if (s->name() == shape)
-            {
-                u->shape = s;
-                break;
-            }
-        }
+        if (shapes.find(model) == shapes.end())
+            shapes[model] = new Shape(lua + "shapes/" + model + ".obj");
+
+        u->shape = shapes[model];
 
         lua_getfield(L, -1, "patterns");
         // STATE: world - units - key - value - patterns
@@ -156,22 +138,16 @@ void TestGame::init_bmap(std::string lua)
             // STATE: - shape
             DOUT("STATE: world - units - key - value - patterns - key - value - shape");
 
-            auto shape = lua_tostring(L, -1);
-
+            std::string model(lua_tostring(L, -1));
+    
             lua_pop(L, 1);
             // STATE: world - units - key - value - patterns - key - value
             DOUT("STATE: world - units - key - value - patterns - key - value");
 
-            for (size_t i = 0; i < shapes.size(); i++)
-            {
-                auto s = shapes[i];
-                if (s->name() == shape)
-                {
-                    p->shape = s;
-                    break;
-                }
-            }
+            if (shapes.find(model) == shapes.end())
+                shapes[model] = new Shape(lua + "shapes/" + model + ".obj");
 
+            p->shape = shapes[model];
             u->patterns.push_back(p);
 
             lua_pop(L, 1);

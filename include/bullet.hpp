@@ -3,7 +3,7 @@
 
 #include <lua.hpp>
 #include <time.hpp>
-#include <shapes/shape.hpp>
+#include <shape.hpp>
 
 #ifdef DEBUG
     #define DOUT(x) std::cout << x << '\n';

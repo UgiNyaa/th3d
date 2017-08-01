@@ -1,4 +1,6 @@
-#include <shape.hpp>
+#include <iostream>
+
+#include "shape.hpp"
 
 const char *vertex_shader_code = R"(
 #version 330 core
@@ -33,9 +35,13 @@ void main()
 }
 )";
 
+Shape::Shape(std::string path)
+    : path(path)
+{ }
+
 Shape::~Shape()
 {
-    glDeleteBuffers(1, &indexbuffer);
+    glDeleteBuffers(1, &elementbuffer);
     glDeleteBuffers(1, &vertexbuffer);
     glDeleteBuffers(1, &uvbuffer);
     glDeleteProgram(pID);
@@ -43,6 +49,7 @@ Shape::~Shape()
 
 void Shape::initialize()
 {
+    std::cout << "hi" << '\n';
     // shader initialization
     {
         GLuint vsID = glCreateShader(GL_VERTEX_SHADER);
@@ -62,12 +69,13 @@ void Shape::initialize()
 
     // vertex, uv, index data initialization
     {
-        Assimp::importer importer;
+        Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile
         (
-            "resources/bmaps/cirno/shapes/block.obj",
+            path,
             aiProcessPreset_TargetRealtime_Quality
-        )
+        );
+        std::cout << path << '\n';
 
         if (!scene)
         {
@@ -78,7 +86,7 @@ void Shape::initialize()
         auto mesh = scene->mMeshes[0];
 
         vertices.resize(mesh->mNumVertices);
-        for (int i = 0; i < mesh->mNumVertices; i++)
+        for (size_t i = 0; i < vertices.size(); i++)
         {
             vertices[i] = glm::vec3
             (
@@ -88,19 +96,18 @@ void Shape::initialize()
             );
         }
 
-        uvs.resize(mesh->GetNumUvChannels());
-        for (int i = 0; i < mesh->GetNumUvChannels(); i++)
+        uvs.resize(mesh->mNumVertices);
+        for (size_t i = 0; i < uvs.size(); i++)
         {
-            uvs[i] = = glm::vec3
+            uvs[i] = glm::vec2
             (
-                mesh->mTextureCoords[i].x, 
-                mesh->mTextureCoords[i].y, 
-                mesh->mTextureCoords[i].z
+                mesh->mTextureCoords[0][i].x,
+                mesh->mTextureCoords[0][i].y
             );
         }
 
         indices.resize(mesh->mNumFaces * 3);
-        for (int i = 0; i < indices.size(); i++)
+        for (size_t i = 0; i < indices.size(); i++)
         {
             indices[i] = mesh->mFaces[i/3].mIndices[i%3];
         }
@@ -123,22 +130,58 @@ void Shape::initialize()
         glBufferData
         (
             GL_ARRAY_BUFFER, 
-            uvs.size() * sizeof(glm::vec3), 
-            uvs.data(), 
+            uvs.size() * sizeof(glm::vec2), 
+            uvs.data(),
             GL_STATIC_DRAW
         );
 
-        glGenBuffers(1, &indexbuffer);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
+        glGenBuffers(1, &elementbuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
         glBufferData
         (
             GL_ELEMENT_ARRAY_BUFFER,
-            index.size() * sizeof(uint32_t),
-            index.data(),
+            indices.size() * sizeof(uint32_t),
+            indices.data(),
             GL_STATIC_DRAW
         );
     }
 
     mvpID = glGetUniformLocation(pID, "MVP");
     colourmultiplierID = glGetUniformLocation(pID, "colourmultiplier");
+}
+
+void Shape::draw
+(
+    glm::mat4 model,
+    glm::mat4 view,
+    glm::mat4 projection,
+    glm::vec3 colourmultiplier
+) const
+{
+    auto mvp = projection * view * model;
+
+    glUseProgram(pID);
+
+    glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
+    glUniform3fv(colourmultiplierID, 1, &colourmultiplier[0]);
+
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+    glDrawElements
+    (
+        GL_TRIANGLES,
+        indices.size(),
+        GL_UNSIGNED_INT,
+        (void*)0
+    );
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
 }

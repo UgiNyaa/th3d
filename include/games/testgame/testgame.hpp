@@ -2,35 +2,32 @@
 #define TESTGAME_HPP
 
 #include <memory>
+#include <map>
+#include <string>
 
 #include <glm/gtx/norm.hpp>
 
+#include <shape.hpp>
 #include <game.hpp>
 #include <time.hpp>
 #include <player.hpp>
 #include <camera.hpp>
 #include <bullet.hpp>
 #include <unit.hpp>
-#include <mc/mcmap.hpp>
 
 #include <drawers/cubedrawer.hpp>
-
-#include <shapes/shape.hpp>
-#include <shapes/cubeshape.hpp>
 
 class TestGame
     : public Game
 {
 protected:
-    const std::vector<Shape*> shapes;
+    std::map<std::string, Shape*> shapes;
 
     Player player;
     Camera camera;
 
     std::vector<Unit*> units;
     std::vector<Bullet*> processing_bullets;
-
-    std::unique_ptr<MCMap> mcmap;
 
     CubeDrawer cubedrawer;
     BoxCollider testbox;

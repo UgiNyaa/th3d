@@ -2,7 +2,7 @@
 #define UNIT_HPP
 
 #include <lua.hpp>
-#include <shapes/shape.hpp>
+#include <shape.hpp>
 #include <bullet.hpp>
 #include <pattern.hpp>
 #include <time.hpp>

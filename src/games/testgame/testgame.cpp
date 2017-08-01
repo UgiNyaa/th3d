@@ -6,8 +6,7 @@
 #include <games/testgame/testgame.hpp>
 
 TestGame::TestGame()
-    : shapes({ new CubeShape() })
-    , player()
+    : player()
     , camera()
     , testbox(glm::vec3(5.0f, 1.0f, 5.0f))
 {
@@ -19,15 +18,13 @@ void TestGame::initialize(int argc, char *argv[])
 
     glfwSetScrollCallback(window, TestGame::scroll_callback);
 
-    cubedrawer.initialize();
-    for (auto shape : shapes)
-        shape->initialize();
-
     init_bmap(argv[1]);
 
-    loadPNG("resources/textures/kawaii.png");
+    cubedrawer.initialize();
+    for (auto shape : shapes)
+        shape.second->initialize();
 
-    mcmap->initialize();
+    loadPNG("resources/textures/kawaii.png");
 }
 
 void TestGame::deinitialize()
@@ -35,7 +32,7 @@ void TestGame::deinitialize()
     Game::deinitialize();
 
     for (auto shape : shapes)
-        delete shape;
+        delete shape.second;
 
     for (auto b : processing_bullets)
         delete b;
@@ -126,8 +123,6 @@ void TestGame::draw()
         projection,
         glm::vec3(0.3f, 0.3f, 1.0f)
     );
-
-    mcmap->draw(view, projection);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

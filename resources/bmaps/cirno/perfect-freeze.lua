@@ -3,7 +3,7 @@ PerfectFreeze.__index = PerfectFreeze
 
 PerfectFreeze.n = 300
 
-PerfectFreeze.shape = "Cube"
+PerfectFreeze.shape = "block"
 
 -- smooth used for fighting against crowding in top and bottom of sphere
 local function smooth(value)

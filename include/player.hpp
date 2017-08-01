@@ -6,7 +6,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include <shapes/shape.hpp>
 #include <collision.hpp>
 #include <colliders/boxcollider.hpp>
 
