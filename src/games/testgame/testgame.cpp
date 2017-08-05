@@ -20,7 +20,8 @@ void TestGame::initialize(int argc, char *argv[])
 
     init_bmap(argv[1]);
 
-    cubedrawer.initialize();
+    player_shape = std::make_unique<Shape>("resources/player.obj");
+    player_shape->initialize();
     for (auto shape : shapes)
         shape.second->initialize();
 
@@ -112,11 +113,11 @@ void TestGame::draw()
     }
 
     if (camera.distance != 0)
-        cubedrawer.draw(player_model(), view, projection, glm::vec3(1.0f));
+        player_shape->draw(player_model(), view, projection, glm::vec3(1.0f));
     // player->draw(view, projection, glm::vec3(1.0f));
 
-    // drawing the collider cube
-    cubedrawer.draw
+    // drawing the collider cube (currently with player shape)
+    player_shape->draw
     (
         glm::translate(glm::vec3(0.0f, -5.0f, 0.0f)) * glm::scale(glm::vec3(5.0f, 1.0f, 5.0f)),
         view,

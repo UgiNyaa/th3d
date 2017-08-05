@@ -25,7 +25,6 @@ protected:
     bool open = false;
 
     GLFWwindow* window;
-    GLuint vertexarrayID;
 
 public:
     Game() { };

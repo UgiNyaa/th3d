@@ -29,7 +29,7 @@ protected:
     std::vector<Unit*> units;
     std::vector<Bullet*> processing_bullets;
 
-    CubeDrawer cubedrawer;
+    std::unique_ptr<Shape> player_shape;
     BoxCollider testbox;
 
     void update_player(float dt);

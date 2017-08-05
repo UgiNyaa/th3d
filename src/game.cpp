@@ -55,16 +55,12 @@ void Game::initialize(int argc, char *argv[])
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    glGenVertexArrays(1, &vertexarrayID);
-    glBindVertexArray(vertexarrayID);
-
     open = true;
 }
 
 void Game::deinitialize()
 {
     window->game = NULL;
-    glDeleteVertexArrays(1, &vertexarrayID);
     glfwTerminate();
     glfwDestroyWindow(window);
 
