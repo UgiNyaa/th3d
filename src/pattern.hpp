@@ -2,8 +2,9 @@
 #define ENGINE_HPP
 
 #include <lua.hpp>
-#include <shape.hpp>
-#include <bullet.hpp>
+
+#include "shape.hpp"
+#include "bullet.hpp"
 
 #ifdef DEBUG
     #define DOUT(x) std::cout << x << '\n';

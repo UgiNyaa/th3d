@@ -11,7 +11,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include <time.hpp>
+#include "time.hpp"
+
+#ifdef DEBUG
+    #define D(x) x
+#else
+    #define D(x)
+#endif
 
 struct GLFWwindow
 {

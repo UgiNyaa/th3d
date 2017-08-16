@@ -6,8 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include <collision.hpp>
-#include <colliders/boxcollider.hpp>
+#include "colliders/boxcollider.hpp"
 
 struct Player
 {

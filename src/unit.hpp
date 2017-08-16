@@ -2,10 +2,11 @@
 #define UNIT_HPP
 
 #include <lua.hpp>
-#include <shape.hpp>
-#include <bullet.hpp>
-#include <pattern.hpp>
-#include <time.hpp>
+
+#include "shape.hpp"
+#include "bullet.hpp"
+#include "pattern.hpp"
+#include "time.hpp"
 
 #ifdef DEBUG
     #define DOUT(x) std::cout << x << '\n';

@@ -1,6 +1,6 @@
-#include <games/testgame/testgame.hpp>
+#include "testgame.hpp"
 
-void TestGame::update_player(float dt)
+void TestGame::update_player()
 {
     double xpos, ypos;
     int32_t width, height;
@@ -19,8 +19,8 @@ void TestGame::update_player(float dt)
 
     auto xdelta = float(width/2 - xpos);
     auto ydelta = float(height/2 - ypos);
-    player.head_horizontal_angle += float(dt) * xdelta * 0.05f;
-    player.head_vertical_angle += float(dt) * ydelta * 0.05f;
+    player.head_horizontal_angle += t.delta * xdelta * 0.05f;
+    player.head_vertical_angle += t.delta * ydelta * 0.05f;
 
     player.velocity = glm::vec3(0.0f);
     if (moving)
@@ -47,6 +47,6 @@ void TestGame::update_player(float dt)
           + (go_up ? up : (go_down ? -up : glm::vec3(0, 0, 0)));
         move = glm::normalize(move);
 
-        player.velocity = move * float(dt) * 10.0f;
+        player.velocity = move * t.delta * 10.0f;
     }
 }

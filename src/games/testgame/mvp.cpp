@@ -1,4 +1,4 @@
-#include <games/testgame/testgame.hpp>
+#include "testgame.hpp"
 
 glm::mat4 TestGame::player_model()
 {
@@ -44,11 +44,9 @@ glm::mat4 TestGame::camera_projection()
     );
 }
 
-glm::mat4 TestGame::unit_model(const Unit& u)
+glm::mat4 TestGame::entity_model(const Entity& e)
 {
-    float ux, uy, uz;
-    u.pos(ux, uy, uz);
-    return glm::translate(glm::vec3(ux, uy, uz)) *
+    return glm::translate(e.position) *
         glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
 }
 

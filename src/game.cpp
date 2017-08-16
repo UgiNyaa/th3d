@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include <game.hpp>
+#include "game.hpp"
 
 static bool GAME_INITIALIZED = false;
 

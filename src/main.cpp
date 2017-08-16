@@ -1,5 +1,5 @@
-#include <game.hpp>
-#include <games/testgame/testgame.hpp>
+#include "game.hpp"
+#include "games/testgame/testgame.hpp"
 
 int main(int argc, char *argv[])
 {

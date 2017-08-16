@@ -1,12 +1,13 @@
 #include <iostream>
 #include <vector>
 
-#include <utils.hpp>
+#include "../../utils.hpp"
 
-#include <games/testgame/testgame.hpp>
+#include "testgame.hpp"
 
 TestGame::TestGame()
-    : player()
+    : s("resources/player.obj")
+    , player()
     , camera()
     , testbox(glm::vec3(5.0f, 1.0f, 5.0f))
 {
@@ -24,6 +25,7 @@ void TestGame::initialize(int argc, char *argv[])
     player_shape->initialize();
     for (auto shape : shapes)
         shape.second->initialize();
+    s.initialize();
 
     loadPNG("resources/textures/kawaii.png");
 }
@@ -34,23 +36,14 @@ void TestGame::deinitialize()
 
     for (auto shape : shapes)
         delete shape.second;
-
-    for (auto b : processing_bullets)
-        delete b;
-
-    for (auto u : units)
-    {
-        for (auto b : u->bullets)
-            delete b;
-        for (auto p : u->patterns)
-            delete p;
-        delete u;
-    }
+    
+    for (auto e : entities)
+        delete e;
 }
 
 void TestGame::update()
 {
-    update_player(t.delta_seconds());
+    update_player();
 
     player.position += testbox.correct
     (
@@ -60,21 +53,7 @@ void TestGame::update()
         player.velocity
     );
 
-    for (auto u : units)
-    {
-        for (size_t i = 0; i < u->patterns.size(); i++)
-        {
-            float ux, uy, uz;
-            u->pos(ux, uy, uz);
-            u->patterns[i]->ux = ux;
-            u->patterns[i]->uy = uy;
-            u->patterns[i]->uz = uz;
-            u->patterns[i]->start(processing_bullets);
-        }
-
-        if (u->patterns.size() > 0)
-            u->patterns.erase(u->patterns.begin(), u->patterns.end());
-    }
+    update_entities();
 
     int32_t width, height;
     glfwGetWindowSize(window, &width, &height);
@@ -91,26 +70,14 @@ void TestGame::draw()
     auto projection = camera_projection();
     auto view = camera_view();
 
-    for(auto u : units)
-        u->shape->draw
+    for(auto e : entities)
+        e->shape->draw
         (
-            unit_model(*u),
+            entity_model(*e),
             view,
             projection,
             glm::vec3(0.6f, 1.0f, 1.0f)
         );
-
-    for (auto b : processing_bullets)
-    {
-        if (b->start <= t.full)
-            b->shape->draw
-            (
-                bullet_model(*b),
-                view,
-                projection,
-                glm::vec3(0.3f, 1.0f, 0.3f)
-            );
-    }
 
     if (camera.distance != 0)
         player_shape->draw(player_model(), view, projection, glm::vec3(1.0f));

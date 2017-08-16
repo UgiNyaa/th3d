@@ -7,38 +7,43 @@
 
 #include <glm/gtx/norm.hpp>
 
-#include <shape.hpp>
-#include <game.hpp>
-#include <time.hpp>
-#include <player.hpp>
-#include <camera.hpp>
-#include <bullet.hpp>
-#include <unit.hpp>
+#include <lua.hpp>
 
-#include <drawers/cubedrawer.hpp>
+#include "../../shape.hpp"
+#include "../../game.hpp"
+#include "../../player.hpp"
+#include "../../camera.hpp"
+#include "../../bullet.hpp"
+#include "../../unit.hpp"
+#include "../../entity.hpp"
 
 class TestGame
     : public Game
 {
 protected:
+    lua_State* L;
+
+    Shape s;
     std::map<std::string, Shape*> shapes;
 
     Player player;
     Camera camera;
 
-    std::vector<Unit*> units;
-    std::vector<Bullet*> processing_bullets;
+    std::vector<Entity*> entities;
 
     std::unique_ptr<Shape> player_shape;
     BoxCollider testbox;
 
-    void update_player(float dt);
+    void update_player();
+    void update_entities();
+    void update_entity();
+    void update_pattern();
 
+    glm::mat4 entity_model(const Entity& e);
+    glm::mat4 bullet_model(const Bullet& b);
     glm::mat4 player_model();
     glm::mat4 camera_view();
     glm::mat4 camera_projection();
-    glm::mat4 unit_model(const Unit& u);
-    glm::mat4 bullet_model(const Bullet& b);
 
     static void scroll_callback
     (

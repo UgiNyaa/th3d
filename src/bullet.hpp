@@ -2,8 +2,9 @@
 #define BULLET_HPP
 
 #include <lua.hpp>
-#include <time.hpp>
-#include <shape.hpp>
+
+#include "time.hpp"
+#include "shape.hpp"
 
 #ifdef DEBUG
     #define DOUT(x) std::cout << x << '\n';

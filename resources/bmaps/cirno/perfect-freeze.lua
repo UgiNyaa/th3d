@@ -3,8 +3,6 @@ PerfectFreeze.__index = PerfectFreeze
 
 PerfectFreeze.n = 300
 
-PerfectFreeze.shape = "block"
-
 -- smooth used for fighting against crowding in top and bottom of sphere
 local function smooth(value)
   if value < 0.5 then
@@ -18,6 +16,7 @@ function PerfectFreeze.create(i)
   local self = setmetatable({}, PerfectFreeze)
   self.i = i
 
+  self.shape = "block"
   self.start = (4*i) / PerfectFreeze.n
 
   self.speed = math.random(4, 7)

@@ -4,7 +4,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/norm.hpp>
 
-#include <colliders/boxcollider.hpp>
+#include "boxcollider.hpp"
 
 
 bool BoxCollider::intersects

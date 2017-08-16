@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include <colliders/collider.hpp>
+#include "collider.hpp"
 
 struct BoxCollider : public Collider {
     glm::vec3 offset;
