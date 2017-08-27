@@ -34,21 +34,21 @@ void print_error(lua_State* L)
 
 void TestGame::init_bmap(std::string lua)
 {
-    D(std::cout << "initializing bmap from " + lua + " path" << '\n';)
+    D(std::cout << "initializing bmap from " + lua + " path" << '\n');
 
     L = luaL_newstate();
     // STATE: 0
-    D(std::cout << "STATE: 0" << '\n';)
+    D(std::cout << "STATE: 0" << '\n');
 
     luaL_openlibs(L);
-    D(std::cout << "lua standard libraries loaded" << '\n';)
+    D(std::cout << "lua standard libraries loaded" << '\n');
 
     int result;
 
     set_lua_path(L, lua + "/?.lua");
     result = luaL_loadfile(L, (lua + "/world.lua").c_str());
-    D(std::cout << "lua " + lua + " loaded" << '\n';)
-    D(std::cout << "result: " + result << '\n';)
+    D(std::cout << "lua " + lua + " loaded" << '\n');
+    D(std::cout << "result: " + result << '\n');
 
     if (result != LUA_OK)
     {
@@ -58,8 +58,8 @@ void TestGame::init_bmap(std::string lua)
     }
 
     result = lua_pcall(L, 0, LUA_MULTRET, 0);
-    D(std::cout << "running the file" << '\n';)
-    D(std::cout << "result: " + result << '\n';)
+    D(std::cout << "running the file" << '\n');
+    D(std::cout << "result: " + result << '\n');
 
     if ( result != LUA_OK )
     {
@@ -70,33 +70,33 @@ void TestGame::init_bmap(std::string lua)
 
     lua_getglobal(L, "world");
     // STATE: world
-    D(std::cout << "STATE: world" << '\n';)
+    D(std::cout << "STATE: world" << '\n');
 
     lua_getfield(L, -1, "entities");
     // STATE: world - entities
-    D(std::cout << "STATE: world - entities" << '\n';)
+    D(std::cout << "STATE: world - entities" << '\n');
 
     lua_pushnil(L);
     // STATE: world - entities - nil
-    D(std::cout << "STATE: world - entities - nil" << '\n';)
+    D(std::cout << "STATE: world - entities - nil" << '\n');
 
     while (lua_next(L, -2))
     {
         // STATE: world - entities - key - value
-        D(std::cout << "STATE: world - entities - key - value" << '\n';)
+        D(std::cout << "STATE: world - entities - key - value" << '\n');
         
         entities.push_back(new Entity());
 
         lua_pop(L, 1);
         // STATE: world - entities - key
-        D(std::cout << "STATE: world - entities - key" << '\n';)
+        D(std::cout << "STATE: world - entities - key" << '\n');
     }
     // STATE: world - entities
-    D(std::cout << "STATE: world - entities" << '\n';)
+    D(std::cout << "STATE: world - entities" << '\n');
 
     lua_pop(L, 2);
     // STATE: 0
-    D(std::cout << "STATE: 0" << '\n';)
+    D(std::cout << "STATE: 0" << '\n');
 
-    D(std::cout << "initialized" << '\n';)
+    D(std::cout << "initialized" << '\n');
 }

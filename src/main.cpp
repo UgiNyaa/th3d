@@ -7,5 +7,4 @@ int main(int argc, char *argv[])
     test.initialize(argc, argv);
     test.loop();
     test.deinitialize();
-    exit(1);
 }

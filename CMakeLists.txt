@@ -12,6 +12,35 @@ file(GLOB_RECURSE th3d_HEADERS "src/*.hpp")
 
 file(COPY resources DESTINATION .)
 
-include_directories(include)
+find_package(PNG REQUIRED)
+include_directories(${PNG_PNG_INCLUDE_DIR})
+set(LIBS ${LIBS} ${PNG_LIBRARY})
+
+find_package(Lua REQUIRED)
+include_directories(${LUA_INCLUDE_DIR})
+set(LIBS ${LIBS} ${LUA_LIBRARIES})
+
+find_package(OpenGL REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIRS})
+set(LIBS ${LIBS} ${OPENGL_LIBRARIES})
+
+find_package(GLEW REQUIRED)
+include_directories(${GLEW_INCLUDE_DIRS})
+set(LIBS ${LIBS} ${GLEW_LIBRARIES})
+
+find_package(GLFW REQUIRED)
+include_directories(${GLFW_INCLUDE_DIRS})
+set(LIBS ${LIBS} ${GLFW_LIBRARIES})
+
+find_package(assimp REQUIRED)
+include_directories(${ASSIMP_INCLUDE_DIR})
+set(LIBS ${LIBS} ${ASSIMP_LIBRARY_RELEASE})
+
+find_package(GLM REQUIRED)
+include_directories(${GLM_INCLUDE_DIRS})
+
+find_package(PNGXX REQUIRED)
+include_directories(${PNGXX_INCLUDE_DIRS})
+
 add_executable(th3d ${th3d_SOURCES} ${th3d_HEADERS})
-target_link_libraries(th3d GLEW glfw GL png lua5.3 assimp)
+target_link_libraries(th3d ${LIBS})

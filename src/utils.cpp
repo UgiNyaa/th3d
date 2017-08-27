@@ -4,7 +4,7 @@
 #include <fstream>
 #include <vector>
 
-#include <png++/png.hpp>
+#include <png.hpp>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
