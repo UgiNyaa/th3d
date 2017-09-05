@@ -128,8 +128,8 @@ void TestGame::update_pattern()
 
     for (size_t i = 0; i < n; i++)
     {
-        lua_pushnumber(L, n);
-        // STATE: world - entities - key - value - patterns - key - value - create - n
+        lua_pushnumber(L, i);
+        // STATE: world - entities - key - value - patterns - key - value - create - i
 
         int result = lua_pcall(L, 1, 1, 0);
 
