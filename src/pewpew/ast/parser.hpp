@@ -22,6 +22,7 @@ private:
 	int parse_prog(ASTNodeProg* node);
 	int parse_call(ASTNodeCall* node);
 	int parse_return(ASTNodeReturn* node);
+	int parse_if(ASTNodeIf* node);
 
 	bool validate_expression(int& range, int& max_level);
 	int count_value(std::string v);

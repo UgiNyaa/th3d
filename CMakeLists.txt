@@ -12,6 +12,26 @@ file(GLOB_RECURSE th3d_HEADERS "src/*.hpp")
 
 file(COPY resources DESTINATION .)
 
+if (MSVC)
+	# according to the organization in the file systems
+	macro(GroupSources curdir)
+
+		file(GLOB children RELATIVE ${PROJECT_SOURCE_DIR}/${curdir}
+		${PROJECT_SOURCE_DIR}/${curdir}/*)
+
+		foreach(child ${children})
+			if(IS_DIRECTORY ${PROJECT_SOURCE_DIR}/${curdir}/${child})
+				GroupSources(${curdir}/${child})
+			else()
+				string(REPLACE "/" "\\" groupname ${curdir})
+				source_group(${groupname} FILES ${PROJECT_SOURCE_DIR}/${curdir}/${child})
+			endif()
+		endforeach()
+	endmacro()
+
+	GroupSources(src)
+endif(MSVC)
+
 find_package(PNG REQUIRED)
 include_directories(${PNG_PNG_INCLUDE_DIR})
 set(LIBS ${LIBS} ${PNG_LIBRARY})

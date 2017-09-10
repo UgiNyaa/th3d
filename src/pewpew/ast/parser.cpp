@@ -478,7 +478,7 @@ int Parser::parse_lambda(ASTNodeLambda* node)
 
 int Parser::parse_prog(ASTNodeProg* node)
 {
-	int error;
+	int error = 0;
 
     if (ts[offset].value != "{")
 		return UNFULFILED_EXPECTATION;
@@ -526,6 +526,14 @@ int Parser::parse_prog(ASTNodeProg* node)
 		{
 			auto n = new ASTNodeReturn();
 			error = parse_return(n);
+			if (error != 0)
+				return error;
+			node->prog.push_back(n);
+		}
+		else if (ts[offset].value == "if")
+		{
+			auto n = new ASTNodeIf();
+			error = parse_if(n);
 			if (error != 0)
 				return error;
 			node->prog.push_back(n);
@@ -609,6 +617,82 @@ int Parser::parse_call(ASTNodeCall* node)
 		return UNFULFILED_EXPECTATION;
 
 	offset++;
+
+	return error;
+}
+
+int Parser::parse_if(ASTNodeIf* node)
+{
+	int error = 0;
+
+	if (ts[offset].value != "if")
+		return UNFULFILED_EXPECTATION;
+
+	offset++;
+
+	if (ts.size() > offset + 1 && ts[offset + 1].type == "OPERATOR")
+	{
+		auto n = new ASTNodeBinary();
+		error = parse_binary(n);
+		if (error != 0)
+			return error;
+		node->cond = n;
+	}
+	else if (ts[offset].type == "VARIABLE")
+	{
+		auto n = new ASTNodeVar();
+		error = parse_var(n);
+		if (error != 0)
+			return error;
+		node->cond = n;
+	}
+	else if (ts[offset].type == "NUMBER")
+	{
+		auto n = new ASTNodeNumber();
+		error = parse_number(n);
+		if (error != 0)
+			return error;
+		node->cond = n;
+	}
+	else if (ts[offset].type == "STRING")
+	{
+		auto n = new ASTNodeString();
+		error = parse_string(n);
+		if (error != 0)
+			return error;
+		node->cond = n;
+	}
+	else if (ts[offset].value == "true" || ts[offset].value == "false")
+	{
+		auto n = new ASTNodeBool();
+		error = parse_bool(n);
+		if (error != 0)
+			return error;
+		node->cond = n;
+	}
+	else
+		return UNFULFILED_EXPECTATION;
+
+	offset++;
+
+	auto n = new ASTNodeProg();
+	error = parse_prog(n);
+	if (error != 0)
+		return error;
+	node->then = n;
+
+	offset++;
+
+	if (ts[offset].value == "else")
+	{
+		auto n = new ASTNodeProg();
+		error = parse_prog(n);
+		if (error != 0)
+			return error;
+		node->els = n;
+
+		offset++;
+	}
 
 	return error;
 }
